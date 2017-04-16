@@ -42,6 +42,13 @@
         </activity>
         <activity android:name=".route.RouteActivity" />
         <activity android:name=".BaseActivity" />
+        <activity android:name=".route.SettingRouteActivity" >
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
 
         <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
         <service android:name="com.amap.api.location.APSService" >

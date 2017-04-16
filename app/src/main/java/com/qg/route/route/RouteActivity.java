@@ -1,6 +1,7 @@
 package com.qg.route.route;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import com.qg.route.BaseActivity;
 import com.qg.route.R;
 import com.qg.route.utils.Constant;
 import com.qg.route.utils.SPUtil;
+import com.qg.route.view.ChooseRoute;
 
 
 /**
@@ -26,16 +28,23 @@ import com.qg.route.utils.SPUtil;
  * 选择路线功能
  */
 
-public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChangeListener, AMap.OnMapLoadedListener {
+public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChangeListener, AMap.OnMapLoadedListener, ChooseRoute.OnRouteClickListener {
     private static final String TAG = "ROUTEACTIVITY";
 
+    // 权限请求
     private static final int REQUEST_LOCATION = 0;
+
+    // sharedpreference key name
     private static final String LOCATION_LONGITUDE = "LONGITUDE";
     private static final String LOCATION_LATITUDE = "LATITUDE";
 
-    private AMap aMap;
-    private MapView mapView;
+    // activity for result key name
+    public static final String ROUTE_NAME = "ROUTENAME";
+    private static final int REQUEST_SET_ROUTE_START = 0;
+    private static final int REQUEST_SET_ROUTE_END = 1;
 
+
+    // 经度和纬度
     private double mLongitude;
     private double mLatitude;
             
@@ -44,7 +53,11 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
     // 精度范围填充颜色
     private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
 
+    // 地图
+    private AMap aMap;
+    private MapView mapView;
 
+    private ChooseRoute chooseRoute;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +79,10 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
             aMap = mapView.getMap();
             setUpMap();
         }
+
+        chooseRoute = (ChooseRoute) findViewById(R.id.route_choose);
+        chooseRoute.setOnRouteClickListener(this);
+        chooseRoute.setDefaultType(1);
     }
 
     /**
@@ -126,11 +143,6 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
         aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 16));
     }
 
-    public void onChange(View view) {
-        aMap.addPolyline((new PolylineOptions())
-                .add(new LatLng(43.828, 87.621), new LatLng(45.808, 126.55))
-                .geodesic(true).color(Color.RED));
-    }
 
     /**
      * 方法必须重写
@@ -171,4 +183,48 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
 		super.onDestroy();
 		mapView.onDestroy();
 	}
+
+    @Override
+    public void walk(View view) {
+
+    }
+
+    @Override
+    public void ride(View view) {
+
+    }
+
+    @Override
+    public void bus(View view) {
+
+    }
+
+    @Override
+    public void drive(View view) {
+
+    }
+
+    @Override
+    public void start(View view) {
+        Intent intent = new Intent(this, SettingRouteActivity.class);
+        intent.putExtra(ROUTE_NAME, chooseRoute.getStartText());
+        startActivityForResult(intent, REQUEST_SET_ROUTE_START);
+    }
+
+    @Override
+    public void end(View view) {
+        Intent intent = new Intent(this, SettingRouteActivity.class);
+        intent.putExtra(ROUTE_NAME, chooseRoute.getEndText());
+        startActivityForResult(intent, REQUEST_SET_ROUTE_END);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_SET_ROUTE_START) {
+            chooseRoute.setStartText(data.getStringExtra(ROUTE_NAME));
+        } else if (requestCode == REQUEST_SET_ROUTE_END) {
+            chooseRoute.setEndText(data.getStringExtra(ROUTE_NAME));
+        }
+    }
 }
