@@ -42,6 +42,11 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 请求权限组
+     * @param id
+     * @param permissions
+     */
     protected void requestPermission(int id, String...permissions) {
         //版本判断
         if (Build.VERSION.SDK_INT >= 23) {

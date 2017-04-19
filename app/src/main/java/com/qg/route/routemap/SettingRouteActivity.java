@@ -1,4 +1,4 @@
-package com.qg.route.route;
+package com.qg.route.routemap;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -72,10 +72,18 @@ public class SettingRouteActivity extends BaseActivity implements Inputtips.Inpu
 
         mData.clear();
         for (int j = 0; j < list.size(); j++) {
-            mData.add(list.get(j).getName());
+            mData.add(list.get(j).getName()
+                    + list.get(j).getPoint().getLatitude() + ", "
+                    + list.get(j).getPoint().getLongitude());
         }
         Log.d("tip", "onGetInputtips: " + mData.toString());
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(0);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.qg.route.route;
+package com.qg.route.routemap;
 
 import android.Manifest;
 import android.content.Intent;
@@ -15,12 +15,11 @@ import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MyLocationStyle;
-import com.amap.api.maps.model.PolylineOptions;
 import com.qg.route.BaseActivity;
 import com.qg.route.R;
 import com.qg.route.utils.Constant;
 import com.qg.route.utils.SPUtil;
-import com.qg.route.view.ChooseRoute;
+import com.qg.route.custom.ChooseRoute;
 
 
 /**
@@ -221,6 +220,9 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 0) {
+            return;
+        }
         if (requestCode == REQUEST_SET_ROUTE_START) {
             chooseRoute.setStartText(data.getStringExtra(ROUTE_NAME));
         } else if (requestCode == REQUEST_SET_ROUTE_END) {
