@@ -15,6 +15,7 @@ import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.services.help.Tip;
 import com.qg.route.BaseActivity;
 import com.qg.route.R;
 import com.qg.route.utils.Constant;
@@ -33,12 +34,14 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
     // 权限请求
     private static final int REQUEST_LOCATION = 0;
 
+    // intent key
+    public static final String ROUTE_NAME = "ROUTENAME";
+
     // sharedpreference key name
     private static final String LOCATION_LONGITUDE = "LONGITUDE";
     private static final String LOCATION_LATITUDE = "LATITUDE";
 
     // activity for result key name
-    public static final String ROUTE_NAME = "ROUTENAME";
     private static final int REQUEST_SET_ROUTE_START = 0;
     private static final int REQUEST_SET_ROUTE_END = 1;
 
@@ -205,16 +208,12 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
 
     @Override
     public void start(View view) {
-        Intent intent = new Intent(this, SettingRouteActivity.class);
-        intent.putExtra(ROUTE_NAME, chooseRoute.getStartText());
-        startActivityForResult(intent, REQUEST_SET_ROUTE_START);
+        SettingRouteActivity.actionStartForResult(this, REQUEST_SET_ROUTE_START, chooseRoute.getStartText());
     }
 
     @Override
     public void end(View view) {
-        Intent intent = new Intent(this, SettingRouteActivity.class);
-        intent.putExtra(ROUTE_NAME, chooseRoute.getEndText());
-        startActivityForResult(intent, REQUEST_SET_ROUTE_END);
+        SettingRouteActivity.actionStartForResult(this, REQUEST_SET_ROUTE_END, chooseRoute.getEndText());
     }
 
     @Override
@@ -224,9 +223,9 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
             return;
         }
         if (requestCode == REQUEST_SET_ROUTE_START) {
-            chooseRoute.setStartText(data.getStringExtra(ROUTE_NAME));
+            chooseRoute.setStartText(((Tip) data.getParcelableExtra(ROUTE_NAME)).getName());
         } else if (requestCode == REQUEST_SET_ROUTE_END) {
-            chooseRoute.setEndText(data.getStringExtra(ROUTE_NAME));
+            chooseRoute.setEndText(((Tip) data.getParcelableExtra(ROUTE_NAME)).getName());
         }
     }
 }

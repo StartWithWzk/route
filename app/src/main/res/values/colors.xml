@@ -2,10 +2,14 @@
 <resources>
     <color name="colorPrimary">#6772fe</color>
     <color name="colorPrimaryDark">#5361f7</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#ffffff</color>
     <color name="font_black">#dc000000</color>
+    <color name="font_white">#ffffff</color>
 
     <!--toolbar-->
-    <color name="toolbar_color">#6772fe</color>
-    <color name="toolbarTextColor">#ffffff</color>
+    <color name="toolbar_color">@color/colorPrimary</color>
+    <color name="toolbarTextColor">@color/font_white</color>
+
+    <!--divider-->
+    <color name="divider_line">#d8d8d8</color>
 </resources>

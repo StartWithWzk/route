@@ -1,6 +1,8 @@
 package com.qg.route.main;
 
 import android.Manifest;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -63,8 +65,8 @@ public class MainActivity extends BaseActivity {
         mViewpager = (ViewPager) findViewById(R.id.vp_main);
         mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
         mPagerAdapter.addFragment("路线", new RouteFragment());
-        mPagerAdapter.addFragment("动态", new RouteFragment());
-        mPagerAdapter.addFragment("聊聊", new RouteFragment());
+//        mPagerAdapter.addFragment("动态", new RouteFragment());
+//        mPagerAdapter.addFragment("聊聊", new RouteFragment());
         mViewpager.setAdapter(mPagerAdapter);
 
         // viewpager tabs

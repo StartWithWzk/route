@@ -33,14 +33,22 @@
             android:name="com.amap.api.v2.apikey"
             android:value="d5ae59c6cc2ad59cf59ce481e29b296d"/>
 
-        <activity android:name=".main.MainActivity" >
+        <activity android:name=".main.MainActivity"
+            android:screenOrientation="portrait">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name=".routemap.RouteActivity"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".routemap.RouteActivity" />
         <activity android:name=".BaseActivity" />
         <activity android:name=".routemap.SettingRouteActivity" >
             <!--<intent-filter>-->

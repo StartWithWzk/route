@@ -8,6 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
     
+    <style name="AppCardView" parent="@style/CardView.Light">
+        <item name="android:clickable">true</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="cardCornerRadius">6dp</item>
+    </style>
 
 
 </resources>
