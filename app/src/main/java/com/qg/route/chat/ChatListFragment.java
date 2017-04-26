@@ -2,6 +2,7 @@ package com.qg.route.chat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,14 +17,22 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.qg.route.R;
+import com.qg.route.bean.ChatLog;
 import com.qg.route.bean.User;
+import com.qg.route.utils.ChatDataBaseHelper;
+import com.qg.route.utils.ChatDataBaseUtil;
 import com.qg.route.utils.HttpUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+
 
 /**
  * Created by Mr_Do on 2017/4/19.
@@ -31,32 +40,55 @@ import okhttp3.ResponseBody;
 
 public class ChatListFragment extends Fragment {
 
+    private final static String ID = "";
+    private Handler mHandler = new Handler();
     private List<User> mFriends;
     private ResponseBody mBody;
     private RecyclerView mChatList = null;
-    private TextView mChatTitle = null;
-    private TextView mChatIntroduce = null;
-    private ImageView mChatImage = null;
-    private String mChatListUrl = null;
-    private String mFriendNameUrl = null;
-    private String mFriendImageUrl = null;
-    private static final String USER_NAME = "com.qg.route.chatlistfragment.username";
-    private static final String USER_ID = "com.qg.route.chatlistfragment.userid";
+    private String mChatListUrl = "";
+    private String mFriendNameUrl = "";
+    private String mFriendImageUrl = "";
+    private ChatAdapter mChatAdapter = null;
+
+    private Runnable getNewsCountRunnable(final ChatHolder chatHolder){
+        return new Runnable() {
+            @Override
+            public void run() {
+                int count = 0;
+                List<ChatLog> list = ChatDataBaseUtil.query(getActivity() , new String[]{ChatDataBaseHelper.FROM , ChatDataBaseHelper.IS_NEW} , new String[]{ID , "1"} , null);
+                count += list.size();
+                list = ChatDataBaseUtil.query(getActivity() , new String[]{ChatDataBaseHelper.TO , ChatDataBaseHelper.IS_NEW} , new String[]{ID , "1"} , null);
+                count += list.size();
+                final int finalCount = count;
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        chatHolder.bindNewsCount(finalCount);
+                    }
+                });
+            }
+        };
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_chat_list , container ,false);
+
+        Intent intent = new Intent(getActivity() , ChatService.class);
+        getActivity().startService(intent);
+
         mChatList = (RecyclerView) view.findViewById(R.id.chat_list);
         mChatList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mChatAdapter = new ChatAdapter();
         getFriendList();
-        ChatAdapter chatAdapter = new ChatAdapter();
-        mChatList.setAdapter(chatAdapter);
         return view;
     }
 
     private void getFriendList(){
+
+        mFriends = new ArrayList<User>();
 
         HttpUtil.DoGet(mChatListUrl , new HttpUtil.HttpConnectCallback() {
             @Override
@@ -74,6 +106,11 @@ public class ChatListFragment extends Fragment {
                                 Gson gson = new Gson();
                                 User user = gson.fromJson(mBody.charStream() , User.class);
                                 mFriends.get(finalI).setName(user.getName());
+                                if(finalI == mFriends.size() - 1 && isAdded()){
+                                    if(mChatList.getAdapter() != null)
+                                        mChatList.getAdapter().notifyDataSetChanged();
+                                    else mChatList.setAdapter(mChatAdapter);
+                                }
                             }
 
                             @Override
@@ -106,6 +143,10 @@ public class ChatListFragment extends Fragment {
 
     private class ChatHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        private TextView mChatTitle = null;
+        private TextView mChatIntroduce = null;
+        private TextView mNewsCount = null;
+        private ImageView mChatImage = null;
         private User mFriend = null;
 
         public ChatHolder(View itemView) {
@@ -113,6 +154,7 @@ public class ChatListFragment extends Fragment {
             mChatTitle = (TextView) itemView.findViewById(R.id.chat_title);
             mChatIntroduce = (TextView) itemView.findViewById(R.id.chat_introduce);
             mChatImage = (ImageView) itemView.findViewById(R.id.chat_image);
+            mNewsCount = (TextView) itemView.findViewById(R.id.news_count);
             itemView.setOnClickListener(this);
         }
         public void bindChatList(User friend){
@@ -122,12 +164,15 @@ public class ChatListFragment extends Fragment {
             Glide.with(ChatListFragment.this).load(mFriendImageUrl+friend.getUserid())
             .into(mChatImage);
         }
+        public void bindNewsCount(int count){
+            mNewsCount.setText(count + "");
+        }
 
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(getActivity() , ChatActivity.class);
-            intent.putExtra(USER_NAME , mFriend.getName())
-                    .putExtra(USER_ID , mFriend.getUserid());
+            intent.putExtra(ChatFragment.USER_NAME , mFriend.getName())
+                    .putExtra(ChatFragment.USER_ID , mFriend.getUserid());
             startActivity(intent);
         }
     }
@@ -145,6 +190,8 @@ public class ChatListFragment extends Fragment {
         public void onBindViewHolder(ChatHolder holder, int position) {
             User user = mFriends.get(position);
             holder.bindChatList(user);
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            executorService.execute(getNewsCountRunnable(holder));
         }
 
 

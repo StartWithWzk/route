@@ -8,4 +8,6 @@
     <!--toolbar-->
     <color name="toolbar_color">#6772fe</color>
     <color name="toolbarTextColor">#ffffff</color>
+    <color name="tabColor">#f7f4f4</color>
+    <color name="tabTextColor">#b4aeae</color>
 </resources>

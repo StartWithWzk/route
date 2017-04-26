@@ -18,10 +18,10 @@ public class ChatLog {
     private int receiveId;      //接收者
     private String content;     //交流内容
     private int flag;           //是否已读，0为未读，1为已读，3为群聊信息
-    private Date sendTime;
+    private String sendTime;
 
     public ChatLog(){
-        this.sendTime = CommonDate.getNowDate();
+        this.sendTime = CommonDate.getNowDate().toString();
     }
 
     public ChatLog(int sendId, String sendName,
@@ -31,7 +31,7 @@ public class ChatLog {
         this.receiveId = receiveId;
         this.content = content;
         this.flag = 0;
-        this.sendTime = CommonDate.getNowDate();
+        this.sendTime = CommonDate.getNowDate().toString();
     }
 
     // get && set
@@ -72,8 +72,12 @@ public class ChatLog {
         this.flag = flag;
     }
 
-    public Date getSendTime() {
+    public String getSendTime() {
         return sendTime;
+    }
+
+    public void setSendTime(String date){
+        sendTime = date;
     }
 
     // toString

@@ -34,14 +34,18 @@
             android:value="d5ae59c6cc2ad59cf59ce481e29b296d"/>
 
         <activity android:name=".main.MainActivity" >
+
+        </activity>
+        <activity android:name=".routemap.RouteActivity" />
+        <activity android:name=".BaseActivity" />
+        <activity android:name=".chat.ChatActivity"/>
+        <activity android:name=".chat.ChatListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".routemap.RouteActivity" />
-        <activity android:name=".BaseActivity" />
         <activity android:name=".routemap.SettingRouteActivity" >
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
@@ -53,6 +57,8 @@
         <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
         <service android:name="com.amap.api.location.APSService" >
         </service>
+
+        <service android:name=".chat.ChatService"></service>
 
     </application>
 
