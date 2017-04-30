@@ -107,7 +107,7 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
     private RecyclerView mGridView;
 
     private int selectedRoute = 0;
-    private int selectedPath = 0;
+    private int selectedPath;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -296,7 +296,8 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
         if (mEndPoint == null) {
             ToastUtil.show(this, "终点未设置");
         }
-
+        // 默认选择第一条
+        selectedPath = 0;
         final RouteSearch.FromAndTo fromAndTo = new RouteSearch.FromAndTo(
                 mStartPoint, mEndPoint);
         if (routeType == Constant.ROUTE_TYPE_BUS) {// 公交路径规划
