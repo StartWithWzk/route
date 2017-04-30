@@ -1,5 +1,6 @@
 package com.qg.route;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,5 +80,14 @@ public class BaseActivity extends AppCompatActivity {
             Log.d("PERMISSION", "requestCode: "+ requestCode + " : " + permission + " : "
                     + (grantResults[0] == PackageManager.PERMISSION_GRANTED));
         }
+    }
+
+    /**
+     * 隐藏软键盘
+     */
+    public void hideSoftInput() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

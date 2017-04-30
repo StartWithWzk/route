@@ -3,5 +3,6 @@
     <declare-styleable name="ChooseRoute">
         <attr name="start_text" format="string" />
         <attr name="end_text" format="string" />
+        <attr name="end_hint_text" format="string" />
     </declare-styleable>
 </resources>

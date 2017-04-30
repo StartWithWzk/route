@@ -58,6 +58,7 @@ public class ChooseRoute extends FrameLayout implements View.OnClickListener {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ChooseRoute);
         startText.setText(ta.getString(R.styleable.ChooseRoute_start_text));
         endText.setText(ta.getString(R.styleable.ChooseRoute_end_text));
+        endText.setHint(ta.getString(R.styleable.ChooseRoute_end_hint_text));
     }
 
     private void init() {
@@ -94,46 +95,28 @@ public class ChooseRoute extends FrameLayout implements View.OnClickListener {
         return endText.getText().toString();
     }
 
-    public void setDefaultType(int number) {
-        if (number > 5 || number < 0) return;
-        initStatus();
-        switch (number) {
-            case 1:
-                walkBtn.setImageResource(R.mipmap.ic_launcher_round);
-                break;
-            case 2:
-                rideBtn.setImageResource(R.mipmap.ic_launcher_round);
-                break;
-            case 3:
-                busBtn.setImageResource(R.mipmap.ic_launcher_round);
-                break;
-            case 4:
-                driveBtn.setImageResource(R.mipmap.ic_launcher_round);
-                break;
-        }
-    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ib_walk:
                 initStatus();
-                walkBtn.setImageResource(R.mipmap.ic_launcher_round);
+                walkBtn.setImageResource(R.mipmap.selected_walk);
                 mListener.walk(v);
                 break;
             case R.id.ib_ride:
                 initStatus();
-                rideBtn.setImageResource(R.mipmap.ic_launcher_round);
+                rideBtn.setImageResource(R.mipmap.selected_bike);
                 mListener.ride(v);
                 break;
             case R.id.ib_bus:
                 initStatus();
-                busBtn.setImageResource(R.mipmap.ic_launcher_round);
+                busBtn.setImageResource(R.mipmap.selected_bus);
                 mListener.bus(v);
                 break;
             case R.id.ib_drive:
                 initStatus();
-                driveBtn.setImageResource(R.mipmap.ic_launcher_round);
+                driveBtn.setImageResource(R.mipmap.selected_car);
                 mListener.drive(v);
                 break;
             case R.id.tv_start:
@@ -146,9 +129,9 @@ public class ChooseRoute extends FrameLayout implements View.OnClickListener {
     }
 
     private void initStatus() {
-        walkBtn.setImageResource(R.mipmap.ic_launcher);
-        rideBtn.setImageResource(R.mipmap.ic_launcher);
-        busBtn.setImageResource(R.mipmap.ic_launcher);
-        driveBtn.setImageResource(R.mipmap.ic_launcher);
+        walkBtn.setImageResource(R.mipmap.unselected_walk);
+        rideBtn.setImageResource(R.mipmap.unselected_bike);
+        busBtn.setImageResource(R.mipmap.unselected_bus);
+        driveBtn.setImageResource(R.mipmap.unselected_car);
     }
 }

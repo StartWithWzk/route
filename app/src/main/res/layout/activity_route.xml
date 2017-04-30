@@ -1,22 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tb_route"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        style="@style/Toolbar">
+    </android.support.v7.widget.Toolbar>
+
     <com.amap.api.maps.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/tb_route">
 
     </com.amap.api.maps.MapView>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/gv_select_route"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_below="@id/tb_route"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:visibility="gone"
+        android:background="@drawable/rect_round_white">
+
+    </android.support.v7.widget.RecyclerView>
+
     <com.qg.route.custom.ChooseRoute
         android:id="@+id/route_choose"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center|bottom"
-        android:padding="24dp"
-        app:start_text="我的位置"
-        app:end_text="输入终点"/>
+        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
+        android:padding="36dp"
+        app:start_text="@string/text_my_position"
+        app:end_hint_text="@string/hint_input_end"/>
 
-</FrameLayout>
+</RelativeLayout>

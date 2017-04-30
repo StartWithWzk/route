@@ -1,5 +1,6 @@
 package com.qg.route.route;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,18 +8,16 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.qg.route.R;
 import com.qg.route.animition.ZoomOutPageTransformer;
+import com.qg.route.bean.Trace;
+import com.qg.route.routemap.RouteActivity;
 
 import java.util.ArrayList;
 
@@ -27,6 +26,11 @@ import java.util.ArrayList;
  */
 
 public class RouteFragment extends Fragment{
+
+    public final static int RESULT_ROUTE_SUCCESS = 1;
+    public final static int RESULT_ROUTE_FAILURE = 0;
+    public final static int REQUEST_ROUTE = 0;
+    public final static String TRACE = "TRACE";
 
     private ArrayList<String> mUserName = new ArrayList<>();
 
@@ -73,6 +77,12 @@ public class RouteFragment extends Fragment{
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
                 container.addView(mImag.get(position));
+                mImag.get(position).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        RouteActivity.actionStartForResult(getActivity(), RouteFragment.this, REQUEST_ROUTE);
+                    }
+                });
                 return mImag.get(position);
             }
 
@@ -93,10 +103,23 @@ public class RouteFragment extends Fragment{
         });
     }
 
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_route, menu);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_ROUTE_SUCCESS) {
+            return;
+        }
+        if (requestCode == REQUEST_ROUTE) {
+            Trace trace = data.getParcelableExtra(TRACE);
+            if (trace != null) {
+
+            }
+        }
     }
 }

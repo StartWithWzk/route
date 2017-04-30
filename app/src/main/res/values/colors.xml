@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6772fe</color>
-    <color name="colorPrimaryDark">#5361f7</color>
-    <color name="colorAccent">#ffffff</color>
+    <color name="colorPrimary">#6773ff</color>
+    <color name="colorPrimaryDark">#5361f8</color>
+    <color name="colorAccent">#fdfdfe</color>
     <color name="font_black">#dc000000</color>
-    <color name="font_white">#ffffff</color>
+    <color name="font_white">#fdfdfe</color>
+    <color name="font_gray">#a3a2a5</color>
 
     <!--toolbar-->
     <color name="toolbar_color">@color/colorPrimary</color>
     <color name="toolbarTextColor">@color/font_white</color>
 
+    <!--background-->
+    <color name="background_main">#f4f4f4</color>
+
+    <!--item background-->
+    <color name="item_background">#fdfdfe</color>
+
     <!--divider-->
     <color name="divider_line">#d8d8d8</color>
+
+    <!--polyline-->
+    <color name="polyline">#537edc</color>
+    <!--hint polyline-->
+    <color name="polyline_hint">#bf537edc</color>
 </resources>

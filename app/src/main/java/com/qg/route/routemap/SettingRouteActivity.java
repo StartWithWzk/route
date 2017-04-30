@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -119,6 +120,16 @@ public class SettingRouteActivity extends BaseActivity implements Inputtips.Inpu
         if (i == AMapException.CODE_AMAP_SUCCESS) {
             mAdapter.notifyTipsChange(mTips = list);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            setResult(0);
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     // 快速启动

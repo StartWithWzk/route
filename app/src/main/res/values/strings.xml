@@ -5,4 +5,7 @@
 
     <!--hint-->
     <string name="hint_et_route_search">搜索</string>
+    <string name="no_result">对不起，没有搜索到相关数据！</string>
+    <string name="hint_input_end">请输入终点</string>
+    <string name="text_my_position">我的位置</string>
 </resources>
