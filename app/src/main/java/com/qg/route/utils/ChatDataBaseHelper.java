@@ -15,12 +15,12 @@ public class ChatDataBaseHelper extends SQLiteOpenHelper{
     public static final String DATABASE_NAME = "chat_content_db";
     public static final String TABLE_NAME = "chat_content_tb";
     public static final String _ID = "_id";
-    public static final String FROM = "from";
-    public static final String TO = "to";
-    public static final String DATE = "date";
-    public static final String CONTENT = "content";
-    public static final String IS_NEW = "is_new";
-    public static final String USER_ID = "user_id";
+    public static final String FROM = "_from";
+    public static final String TO = "_to";
+    public static final String DATE = "_date";
+    public static final String CONTENT = "_content";
+    public static final String IS_NEW = "_is_new";
+    public static final String USER_ID = "_user_id";
     private SQLiteDatabase mDatabase;
     private Boolean mIsInitializing;
 
@@ -32,7 +32,7 @@ public class ChatDataBaseHelper extends SQLiteOpenHelper{
             CONTENT + " TEXT, " +
             USER_ID + " TEXT, " +
             DATE + " TEXT, " +
-            IS_NEW + " TEXT, "+
+            IS_NEW + " TEXT "+
             " )";
 
 

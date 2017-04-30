@@ -37,7 +37,7 @@ public class ChatDataBaseUtil {
     }
 
     private static String getWhich(String[] which){
-        String sql = null;
+        String sql = "";
         int k = 0 ;
         for(;k < which.length - 1 ; k++){
             sql += which[k] + " = ?" + " and ";
@@ -54,7 +54,7 @@ public class ChatDataBaseUtil {
     public static List<ChatLog> query(Context context , String[] which , String[] values , String orderBy){
         List<ChatLog> logs = new ArrayList<>();
         sSQLiteDatabase = ChatDataBaseHelper.getDataBaseInstance(context).getReadableDatabase();
-        Cursor cursor = sSQLiteDatabase.query(ChatDataBaseHelper.TABLE_NAME,null , getWhich(which) , values , null , null ,orderBy);
+        Cursor cursor = sSQLiteDatabase.query(ChatDataBaseHelper.TABLE_NAME ,null , getWhich(which) , values , null , null ,orderBy);
         while (cursor.moveToNext()){
             ChatLog chatLog = new ChatLog();
             chatLog.setSendId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ChatDataBaseHelper.FROM))));

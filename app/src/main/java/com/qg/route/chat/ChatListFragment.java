@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,21 +16,28 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.qg.route.R;
 import com.qg.route.bean.ChatLog;
+import com.qg.route.bean.RequestResult;
 import com.qg.route.bean.User;
 import com.qg.route.utils.ChatDataBaseHelper;
 import com.qg.route.utils.ChatDataBaseUtil;
 import com.qg.route.utils.HttpUtil;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import okhttp3.Headers;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -40,14 +48,16 @@ import okhttp3.ResponseBody;
 
 public class ChatListFragment extends Fragment {
 
-    private final static String ID = "";
+
+
+    private final static String MY_ID = "11111";
+    private final static String LAND_URL = "http://118.89.54.17:8080/onway/user/login";
     private Handler mHandler = new Handler();
     private List<User> mFriends;
     private ResponseBody mBody;
     private RecyclerView mChatList = null;
-    private String mChatListUrl = "";
-    private String mFriendNameUrl = "";
-    private String mFriendImageUrl = "";
+    private String mChatListUrl = "http://118.89.54.17:8080/onway/relation/list";
+    private String mFriendImageUrl = "http://118.89.54.17:8080/onway/picture/11111.jpg";
     private ChatAdapter mChatAdapter = null;
 
     private Runnable getNewsCountRunnable(final ChatHolder chatHolder){
@@ -55,9 +65,9 @@ public class ChatListFragment extends Fragment {
             @Override
             public void run() {
                 int count = 0;
-                List<ChatLog> list = ChatDataBaseUtil.query(getActivity() , new String[]{ChatDataBaseHelper.FROM , ChatDataBaseHelper.IS_NEW} , new String[]{ID , "1"} , null);
+                List<ChatLog> list = ChatDataBaseUtil.query(getActivity() , new String[]{ChatDataBaseHelper.FROM , ChatDataBaseHelper.IS_NEW} , new String[]{MY_ID, "1"} , null);
                 count += list.size();
-                list = ChatDataBaseUtil.query(getActivity() , new String[]{ChatDataBaseHelper.TO , ChatDataBaseHelper.IS_NEW} , new String[]{ID , "1"} , null);
+                list = ChatDataBaseUtil.query(getActivity() , new String[]{ChatDataBaseHelper.TO , ChatDataBaseHelper.IS_NEW} , new String[]{MY_ID, "1"} , null);
                 count += list.size();
                 final int finalCount = count;
                 mHandler.post(new Runnable() {
@@ -82,48 +92,90 @@ public class ChatListFragment extends Fragment {
         mChatList = (RecyclerView) view.findViewById(R.id.chat_list);
         mChatList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mChatAdapter = new ChatAdapter();
-        getFriendList();
+        mChatList.setAdapter(mChatAdapter);
+
+        // TODO: 2017/4/27
+        land();
+
+
         return view;
+    }
+
+    private void land() {
+        Map<String , String> map = new HashMap<>();
+        map.put("userid",MY_ID);
+        map.put("password","123456");
+        HttpUtil.PostMap(LAND_URL, map, new HttpUtil.HttpConnectCallback() {
+            @Override
+            public void onSuccess(Response response) {
+                Gson gson = new Gson();
+                testJson();
+                RequestResult requestResult = gson.fromJson(response.body().charStream() , RequestResult.class);
+                Log.e("INFO",requestResult.getStateInfo());
+
+                Headers headers = response.headers();
+                Log.d("info_headers", "header " + headers);
+                List<String> cookies = headers.values("Set-Cookie");
+                if(cookies != null && cookies.size()>0) {
+                    String session = cookies.get(0);
+                    HttpUtil.setSession(session);
+                }
+                getFriendList();
+            }
+
+
+            @Override
+            public void onFailure(IOException e) {
+
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        } , false);
+    }
+
+    private void testJson(){
+        List<User> users = new ArrayList<User>();
+        User user = new User();
+        user.setIntroduction("ACB");
+        user.setName("AAD");
+        users.add(user);
+        users.add(user);
+        users.add(user);
+
+        RequestResult<List<User>> requestResult = new RequestResult<List<User>>(1,"2",users);
+        String json = new Gson().toJson(requestResult , new TypeToken<RequestResult<List<User>>>(){}.getType());
+        Log.e("JSON",json);
+        requestResult = new Gson().fromJson(json , new TypeToken<RequestResult<List<User>>>(){}.getType());
+        Log.e("USER",requestResult.getData().get(0).getIntroduction());
     }
 
     private void getFriendList(){
 
         mFriends = new ArrayList<User>();
-
         HttpUtil.DoGet(mChatListUrl , new HttpUtil.HttpConnectCallback() {
             @Override
             public void onSuccess(Response response) {
                 Gson gson = new Gson();
                 mBody = response.body();
                 if(mBody != null){
-                    mFriends= gson.fromJson(mBody.charStream(), new TypeToken<List<User>>() {
-                    }.getType());
-                    for(int i = 0 ; i < mFriends.size() ; i++){
-                        final int finalI = i;
-                        HttpUtil.DoGet(mFriendNameUrl + mFriends.get(i).getUserid(), new HttpUtil.HttpConnectCallback() {
-                            @Override
-                            public void onSuccess(Response response) {
-                                Gson gson = new Gson();
-                                User user = gson.fromJson(mBody.charStream() , User.class);
-                                mFriends.get(finalI).setName(user.getName());
-                                if(finalI == mFriends.size() - 1 && isAdded()){
-                                    if(mChatList.getAdapter() != null)
-                                        mChatList.getAdapter().notifyDataSetChanged();
-                                    else mChatList.setAdapter(mChatAdapter);
-                                }
-                            }
+                    RequestResult requestResult = gson.fromJson(mBody.charStream(), RequestResult.class);
 
-                            @Override
-                            public void onFailure(IOException e) {
+                    // TODO: 2017/4/27
 
-                            }
 
-                            @Override
-                            public void onFailure() {
 
-                            }
-                        } , false);
-                    }
+//                    String user = requestResult.getData();
+//                    mFriends = gson.fromJson(user , new TypeToken<List<User>>(){}.getType());
+//
+//                    mHandler.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            mChatAdapter.notifyDataSetChanged();
+//                        }
+//                    });
                 }
             }
 
@@ -161,11 +213,13 @@ public class ChatListFragment extends Fragment {
             mFriend = friend;
             mChatIntroduce.setText(friend.getIntroduction());
             mChatTitle.setText(friend.getName());
-            Glide.with(ChatListFragment.this).load(mFriendImageUrl+friend.getUserid())
+            Glide.with(ChatListFragment.this).load(mFriendImageUrl)
             .into(mChatImage);
         }
         public void bindNewsCount(int count){
-            mNewsCount.setText(count + "");
+            if(count > 0)
+                mNewsCount.setText(count + "");
+            else mNewsCount.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -197,7 +251,8 @@ public class ChatListFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return mFriends.size();
+            if(mFriends == null) return 0;
+            else return mFriends.size();
         }
     }
 }

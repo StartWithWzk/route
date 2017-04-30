@@ -30,6 +30,15 @@ import okio.ByteString;
 public class HttpUtil {
 
     private static File sCacheDirectory = null;
+    private static String sSession = null;
+
+    /**
+     * 设置session
+     * @param session
+     */
+    public static void setSession(String session){
+        sSession = session;
+    }
 
 
     /**
@@ -126,13 +135,20 @@ public class HttpUtil {
         OK_HTTP_CLIENT.newWebSocket(request , webSocketListener);
     }
 
+    private static void addSession(Request.Builder builder){
+        if(sSession != null)
+            builder.addHeader("cookie",sSession);
+    }
+
     /**
      * 创建Get的request
      * @param url
      * @return request
      */
     private static Request buildRequest(String url){
-        return new Request.Builder().
+        Request.Builder builder = new Request.Builder();
+        addSession(builder);
+        return builder.
                 cacheControl(new CacheControl.Builder().maxStale(CACHE_TIME , TimeUnit.SECONDS).build())
                 .url(url)
                 .get()
@@ -146,7 +162,9 @@ public class HttpUtil {
      * @return request
      */
     private static Request buildRequest(String url, RequestBody requestBody){
-        return new Request.Builder().url(url).post(requestBody).build();
+        Request.Builder builder = new Request.Builder();
+        addSession(builder);
+        return builder.url(url).post(requestBody).build();
     }
 
     /**

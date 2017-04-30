@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
  */
 
 public class ChatActivity extends SingleFragmentActivity{
+
     @Override
     protected Fragment createFragment() {
         String name = null;
@@ -15,6 +16,7 @@ public class ChatActivity extends SingleFragmentActivity{
         Intent i = getIntent();
         name = i.getStringExtra(ChatFragment.USER_NAME);
         id = i.getStringExtra(ChatFragment.USER_ID);
+        getSupportActionBar().setTitle(name);
         return ChatFragment.newInstance(name , id);
     }
 }

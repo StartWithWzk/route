@@ -13,16 +13,38 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/moments_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_scrollFlags="scroll|enterAlways">
+            android:layout_height="200dp"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:title=""
+            android:background="@drawable/moment_test_background">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/person_image"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:scaleType="centerCrop"
+                    android:layout_centerInParent="true"
+                    android:src="@mipmap/ic_launcher_round"/>
+                <TextView
+                    android:id="@+id/edit_data"
+                    android:layout_below="@+id/person_image"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:text="编辑资料"
+                    android:textSize="16dp"
+                    android:layout_height="30dp" />
+            </RelativeLayout>
         </android.support.v7.widget.Toolbar>
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/tabColor"
-            app:tabGravity="center"
-            app:tabMode="scrollable"
+            app:tabIndicatorColor="@color/colorPrimary"
+            app:tabGravity="fill"
+            app:tabMode="fixed"
             app:tabTextColor="@color/tabTextColor"
             app:tabSelectedTextColor="@color/colorPrimaryDark"></android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>

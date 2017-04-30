@@ -8,14 +8,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.qg.route.R;
 import com.qg.route.bean.ChatLog;
@@ -36,15 +39,19 @@ import java.util.concurrent.Executors;
 
 public class ChatFragment extends Fragment {
 
-    private final static String MY_ID = "";
+    private final static int VIEW_TYPE_FRIEND = 0;
+    private final static int VIEW_TYPE_ME = 1;
+    private final static String MY_ID = "11111";
+    private final static String LAND_URL = "http://118.89.54.17:8080/onway/user/login";
+    private String mFriendImageUrl = "http://118.89.54.17:8080/onway/picture/11111.jpg";
     private Handler mHandler = new Handler();
     private List<ChatLog> mContents;
     private ChatAdapter mChatAdapter;
     private RecyclerView mChatContent;
     private EditText mSendContent;
     private Button mSendButton;
-    private String mName;
-    private String mId;
+    private String mFriendName;
+    private String mFriendId;
     private String mFragmentState;
     private ChatReceiver mChatReceiver = new ChatReceiver();
     private ExecutorService mExecutorService= Executors.newSingleThreadExecutor();;
@@ -81,6 +88,12 @@ public class ChatFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -94,19 +107,32 @@ public class ChatFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 HttpUtil.sendMessage(mSendContent.getText().toString());
-                mSendContent.setText("");
+                mSendContent.setText(mSendContent.getText());
             }
         });
+        mFriendId = getArguments().getString(USER_ID);
+        mFriendName = getArguments().getString(USER_NAME);
 
-        mId = getArguments().getString(USER_ID);
-        mName = getArguments().getString(USER_NAME);
         mContents = new ArrayList<>();
+
+
+        // TODO: 2017/4/28 test
+        ChatLog chatLog1 = new ChatLog(Integer.parseInt(MY_ID),"哈哈",Integer.parseInt("22222"),"嘻嘻","HELLO,What's you name");
+        ChatLog chatLog2 = new ChatLog(Integer.parseInt("22222"),"哈哈",Integer.parseInt(MY_ID),"嘻嘻","HELLO,My name is HaHa");
+        for (int i = 0 ; i < 10 ; i++){
+            mContents.add(chatLog1);
+            mContents.add(chatLog2);
+        }
+
         mChatAdapter = new ChatAdapter();
-        if(isAdded())
+        if(isAdded()) {
+            mChatContent.setLayoutManager(new LinearLayoutManager(getActivity()));
             mChatContent.setAdapter(mChatAdapter);
+        }
         mExecutorService.execute(getContentRunnable());
         return view;
     }
+
 
     private Runnable getContentRunnable(){
         return new Runnable() {
@@ -140,41 +166,74 @@ public class ChatFragment extends Fragment {
 
     }
 
-    private class ChatHolder extends RecyclerView.ViewHolder{
-
+    private class MyChatHolder extends RecyclerView.ViewHolder{
+        private ImageView mMyImage;
         private TextView mMyText;
-        private TextView mFriendText;
-        public ChatHolder(View itemView) {
+        public MyChatHolder(View itemView) {
             super(itemView);
             mMyText = (TextView) itemView.findViewById(R.id.my_text);
-            mFriendText = (TextView) itemView.findViewById(R.id.friend_text);
+            mMyImage = (ImageView) itemView.findViewById(R.id.chat_content_my_image);
         }
         public void bindChatContent(ChatLog chatLog){
-            if((chatLog.getSendId()+"").equals(MY_ID)) {
-                mMyText.setText(chatLog.getContent());
-            }else mFriendText.setText(chatLog.getContent());
+            mMyText.setText(chatLog.getContent());
+            Glide.with(ChatFragment.this).load(mFriendImageUrl).into(mMyImage);
         }
 
     }
 
-    private class ChatAdapter extends RecyclerView.Adapter<ChatHolder>{
+    private class FriendChatHolder extends RecyclerView.ViewHolder{
+        private TextView mFriendText;
+        private ImageView mFriendImage;
+        public FriendChatHolder(View itemView) {
+            super(itemView);
+            mFriendText = (TextView) itemView.findViewById(R.id.friend_text);
+            mFriendImage = (ImageView) itemView.findViewById(R.id.chat_content_friend_image);
+        }
+        public void bindChatContent(ChatLog chatLog){
+            mFriendText.setText(chatLog.getContent());
+            Glide.with(ChatFragment.this).load(mFriendImageUrl).into(mFriendImage);
+        }
+    }
+
+    private class ChatAdapter extends RecyclerView.Adapter{
 
         @Override
-        public ChatHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater inflater = LayoutInflater.from(getActivity());
-            View view = inflater.inflate(R.layout.item_chat , parent , false);
-            return new ChatHolder(view);
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if(viewType == VIEW_TYPE_FRIEND) {
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
+                View view = inflater.inflate(R.layout.item_chat_friend, parent , false);
+                return new FriendChatHolder(view);
+            } else if(viewType == VIEW_TYPE_ME) {
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
+                View view = inflater.inflate(R.layout.item_chat_me, parent , false);
+                return new MyChatHolder(view);
+            } else return null;
         }
 
         @Override
-        public void onBindViewHolder(ChatHolder holder, int position) {
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             ChatLog chatLog = mContents.get(position);
-            holder.bindChatContent(chatLog);
+            if(holder instanceof MyChatHolder){
+                ((MyChatHolder) holder).bindChatContent(chatLog);
+            }else if(holder instanceof FriendChatHolder){
+                ((FriendChatHolder) holder).bindChatContent(chatLog);
+            }
         }
 
         @Override
         public int getItemCount() {
             return mContents.size();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            ChatLog log = null;
+            if(mContents != null) {
+                log = mContents.get(position);
+            }
+            if((log.getSendId()+"").equals(MY_ID))
+                return VIEW_TYPE_ME;
+            else return VIEW_TYPE_FRIEND;
         }
     }
 
