@@ -59,11 +59,9 @@ public class WalkRouteOverlay extends RouteOverlay {
                 
 				addWalkStationMarkers(walkStep, latLng);
                 addWalkPolyLines(walkStep);
-               
             }
             mPolylineOptions.add(endPoint);
             addStartAndEndMarker();
-
             showPolyline();
         } catch (Throwable e) {
             e.printStackTrace();

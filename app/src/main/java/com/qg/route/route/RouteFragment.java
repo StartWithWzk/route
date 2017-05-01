@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,9 +19,11 @@ import android.view.ViewGroup;
 import com.qg.route.R;
 import com.qg.route.animition.ZoomOutPageTransformer;
 import com.qg.route.bean.Trace;
+import com.qg.route.bean.XYPoint;
 import com.qg.route.routemap.RouteActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Ricco on 2017/4/18.
@@ -50,13 +54,17 @@ public class RouteFragment extends Fragment{
     }
 
     private void initView(View view) {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             mUserName.add(i + "");
         }
+        // 这两行代码需要后期改进，考虑Recycleview的多种Viewholder情况
+        NestedScrollView nestview = (NestedScrollView) view.findViewById(R.id.nsv_route);
+        nestview.smoothScrollTo(0, 0);
+
         mUserHeadRV = (RecyclerView) view.findViewById(R.id.rv_user_head);
         // 设置为横向
         mUserHeadRV.setLayoutManager(
-                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+                new GridLayoutManager(getActivity(), 5));
         mUserHeadRV.setAdapter(new UserHeadAdapter(getActivity(), R.layout.item_user_headview, mUserName));
     }
 
@@ -118,7 +126,8 @@ public class RouteFragment extends Fragment{
         if (requestCode == REQUEST_ROUTE) {
             Trace trace = data.getParcelableExtra(TRACE);
             if (trace != null) {
-                // TODO: 2017/4/30  
+                // TODO: 2017/4/30
+                List<XYPoint> list = trace.getPoint();
             }
         }
     }

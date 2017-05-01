@@ -1,223 +1,267 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipChildren="false">
+    android:layout_height="match_parent">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/vp_route"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="128dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="80dp"
-        android:layout_marginRight="80dp"
-        android:clipChildren="false"/>
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:background="@null"
+        app:theme="@style/Widget.AppCompat.ActionBar">
 
-    <LinearLayout
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp_route"
+            android:layout_width="match_parent"
+            android:layout_height="128dp"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginRight="80dp"
+            android:layout_marginBottom="16dp"
+            android:clipChildren="false"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nsv_route"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ScrollView
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="12dp">
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:orientation="vertical">
 
+            <!--路线描述-->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:orientation="vertical">
-
-                <!--路线描述-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="路线描述"
-                        android:textSize="24dp"
-                        android:gravity="center" />
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@mipmap/ic_launcher_round"/>
-                </LinearLayout>
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:elevation="4dp"
-                    style="@style/AppCardView" >
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                        <ImageView
-                            android:id="@+id/iv_start_to_end"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/start_to_end"/>
-                        <!--起点-->
-                        <TextView
-                            android:id="@+id/tv_temp_start"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="起点"
-                            android:layout_toRightOf="@id/iv_start_to_end"
-                            android:layout_alignTop="@id/iv_start_to_end"/>
-                        <TextView
-                            android:id="@+id/tv_start"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="起点内容"
-                            android:layout_below="@id/tv_temp_start"
-                            android:layout_toRightOf="@id/iv_start_to_end"/>
-
-                        <!--终点-->
-                        <TextView
-                            android:id="@+id/tv_temp_end"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="终点"
-                            android:layout_toRightOf="@id/iv_start_to_end"
-                            android:layout_alignBottom="@id/iv_start_to_end"/>
-                        <TextView
-                            android:id="@+id/tv_end"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="终点内容"
-                            android:layout_below="@id/tv_temp_end"
-                            android:layout_toRightOf="@id/iv_start_to_end"/>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true">
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@mipmap/ic_launcher"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="地铁"/>
-                        </LinearLayout>
-
-                    </RelativeLayout>
-                </android.support.v7.widget.CardView>
-
-                <!--圈子介绍-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="圈子介绍"
-                        android:textSize="24dp"
-                        />
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@mipmap/ic_launcher_round"/>
-                </LinearLayout>
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:elevation="4dp"
-                    style="@style/AppCardView" >
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical" >
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:id="@+id/tv_circle_name"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:text="好好学习天天向上" />
-
-                            <TextView
-                                android:id="@+id/tv_circle_user_num"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
-                                android:layout_centerVertical="true"
-                                android:text="7人"
-                                />
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_toLeftOf="@id/tv_circle_user_num"
-                                android:src="@mipmap/ic_launcher"/>
-
-                        </RelativeLayout>
-
-                        <!--分割线-->
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@color/divider_line" />
-
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/rv_user_head"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                        </android.support.v7.widget.RecyclerView>
-
-                        <Button
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@color/colorPrimary"
-                            android:text="加  入  圈  子"
-                            android:textSize="16dp"
-                            android:textColor="@color/font_white"/>
-
-                    </LinearLayout>
-                </android.support.v7.widget.CardView>
-
-                <!--商家介绍-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="商家推荐"
-                        android:textSize="24dp"
-                        android:gravity="center" />
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@mipmap/ic_launcher_round"/>
-                </LinearLayout>
-                <android.support.v7.widget.CardView
+                    android:text="路线描述"
+                    android:textSize="20dp"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_gravity="center_vertical" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="16dp"
+                    android:src="@mipmap/route_describe"/>
+            </LinearLayout>
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="6dp"
+                android:layout_marginTop="8dp"
+                style="@style/AppCardView" >
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:elevation="4dp"
-                    style="@style/AppCardView" >
-                    <android.support.v7.widget.RecyclerView
-                        android:layout_width="match_parent"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+                    <ImageView
+                        android:id="@+id/iv_start_to_end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="80dp"
+                        android:src="@drawable/start_to_end"/>
+                    <!--起点-->
+                    <TextView
+                        android:id="@+id/tv_temp_start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="起点"
+                        android:textColor="@color/font_gray"
+                        android:layout_toRightOf="@id/iv_start_to_end"
+                        android:layout_alignTop="@id/iv_start_to_end"/>
+                    <TextView
+                        android:id="@+id/tv_start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="起点内容"
+                        android:textColor="@color/font_black"
+                        android:layout_below="@id/tv_temp_start"
+                        android:layout_toRightOf="@id/iv_start_to_end"/>
+
+                    <!--终点-->
+                    <TextView
+                        android:id="@+id/tv_temp_end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="终点"
+                        android:textColor="@color/font_gray"
+                        android:layout_toRightOf="@id/iv_start_to_end"
+                        android:layout_alignBottom="@id/iv_start_to_end"/>
+                    <TextView
+                        android:id="@+id/tv_end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="终点内容"
+                        android:textColor="@color/font_black"
+                        android:layout_below="@id/tv_temp_end"
+                        android:layout_toRightOf="@id/iv_start_to_end"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:layout_marginRight="12dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true">
+                        <ImageView
+                            android:id="@+id/iv_route_type"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@mipmap/selected_bus"/>
+                        <TextView
+                            android:id="@+id/tv_route_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="8dp"
+                            android:text="地铁"
+                            android:textColor="@color/colorPrimaryDark"/>
+                    </LinearLayout>
+
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+            <!--圈子介绍-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="圈子介绍"
+                    android:textSize="20dp"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_gravity="center_vertical"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="16dp"
+                    android:src="@mipmap/group_describe"/>
+            </LinearLayout>
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:cardElevation="6dp"
+                style="@style/AppCardView" >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
                         >
+                        <TextView
+                            android:id="@+id/tv_circle_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="好好学习天天向上"
+                            android:textSize="@dimen/font_normal"
+                            android:textColor="@color/colorPrimaryDark"/>
+
+                        <TextView
+                            android:id="@+id/tv_circle_user_num"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:text="6人"
+                            android:textColor="@color/colorPrimaryDark"
+                            />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_toLeftOf="@id/tv_circle_user_num"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="8dp"
+                            android:src="@mipmap/people_num"/>
+
+                    </RelativeLayout>
+
+                    <!--分割线-->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/divider_line" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_user_head"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp">
 
                     </android.support.v7.widget.RecyclerView>
-                </android.support.v7.widget.CardView>
 
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:text="加  入  圈  子"
+                        android:textSize="16dp"
+                        android:textColor="@color/font_white"/>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <!--商家介绍-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="商家介绍"
+                    android:textSize="20dp"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_gravity="center_vertical"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="16dp"
+                    android:src="@mipmap/store"/>
             </LinearLayout>
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                app:cardElevation="6dp"
+                style="@style/AppCardView" >
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    >
 
-        </ScrollView>
-    </LinearLayout>
+                </android.support.v7.widget.RecyclerView>
+            </android.support.v7.widget.CardView>
 
-</LinearLayout>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

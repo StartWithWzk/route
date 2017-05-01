@@ -4,13 +4,19 @@
     android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/iv_user_head"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@mipmap/points"/>
 
     <TextView
         android:id="@+id/tv_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_marginTop="4dp"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/font_normal"
+        android:textColor="@color/font_black"
+        android:text="温治康Wzk"
         />
 </LinearLayout>

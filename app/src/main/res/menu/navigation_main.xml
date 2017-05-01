@@ -3,26 +3,26 @@
 
     <item
         android:id="@+id/menu_address"
-        android:icon="@mipmap/ic_launcher_round"
+        android:icon="@mipmap/contact"
         android:title="通讯录" />
 
     <item
         android:id="@+id/menu_friend_recommend"
-        android:icon="@mipmap/ic_launcher_round"
+        android:icon="@mipmap/recommend"
         android:title="推荐好友" />
 
     <item
         android:id="@+id/menu_order"
-        android:icon="@mipmap/ic_launcher_round"
+        android:icon="@mipmap/order"
         android:title="订单" />
 
     <item
         android:id="@+id/menu_setting"
-        android:icon="@mipmap/ic_launcher_round"
+        android:icon="@mipmap/setting"
         android:title="设置" />
 
     <item
         android:id="@+id/menu_exit"
-        android:icon="@mipmap/ic_launcher_round"
+        android:icon="@mipmap/exit"
         android:title="退出" />
 </menu>

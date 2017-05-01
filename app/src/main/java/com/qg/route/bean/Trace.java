@@ -6,11 +6,23 @@ import android.os.Parcelable;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.BusPath;
+import com.amap.api.services.route.BusStep;
 import com.amap.api.services.route.DrivePath;
+import com.amap.api.services.route.DriveStep;
 import com.amap.api.services.route.Path;
 import com.amap.api.services.route.RidePath;
+import com.amap.api.services.route.RideStep;
+import com.amap.api.services.route.RouteBusLineItem;
+import com.amap.api.services.route.RouteRailwayItem;
+import com.amap.api.services.route.TaxiItem;
 import com.amap.api.services.route.WalkPath;
+import com.amap.api.services.route.WalkStep;
+import com.qg.route.utils.AMapUtil;
 import com.qg.route.utils.Constant;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Ricco on 2017/4/13.
@@ -71,6 +83,82 @@ public class Trace implements Parcelable{
 
     public WalkPath getmWalkPath() {
         return mWalkPath;
+    }
+
+    public List<XYPoint> getPoint() {
+        List<XYPoint> pointsList = new ArrayList<>();
+        // 初始化坐标集
+        switch (selectedRouteType) {
+            case Constant.ROUTE_TYPE_WALK:
+                getWalkPoint(pointsList, mWalkPath);
+                break;
+            case Constant.ROUTE_TYPE_RIDE:
+                getRidePoint(pointsList);
+            case Constant.ROUTE_TYPE_BUS:
+                getBusPoint(pointsList);
+                break;
+            case Constant.ROUTE_TYPE_DRIVE:
+                getDrivePoint(pointsList);
+                break;
+            default:
+                break;
+        }
+
+        return pointsList;
+    }
+
+    // 获取步行路线
+    private void getWalkPoint(List<XYPoint> pointsList, WalkPath walkPath) {
+        if (pointsList == null) {
+            return;
+        }
+        // 双重循环轮询
+        for (WalkStep step : walkPath.getSteps()
+             ) {
+            AMapUtil.convertXYPointArrayList(step.getPolyline(), pointsList);
+        }
+    }
+
+    // 获取骑行路线
+    private void getRidePoint(List<XYPoint> pointsList) {
+        if (pointsList == null) {
+            return;
+        }
+        // 双重轮询
+        for (RideStep step : mRidePath.getSteps()
+                ) {
+            AMapUtil.convertXYPointArrayList(step.getPolyline(), pointsList);
+        }
+    }
+
+    private void getBusPoint(List<XYPoint> pointsList) {
+        if (pointsList == null) {
+            return;
+        }
+        for (BusStep step : mBusPath.getSteps()
+                ) {
+            // 添加步行路线
+            if (step.getWalk() != null) {
+                getWalkPoint(pointsList, step.getWalk());
+            }
+            // 添加公交路线
+            if (step.getBusLines() != null) {
+                for (RouteBusLineItem busLine : step.getBusLines()
+                     ) {
+                    AMapUtil.convertXYPointArrayList(busLine.getPolyline(), pointsList);
+                }
+            }
+        }
+    }
+
+    private void getDrivePoint(List<XYPoint> pointsList) {
+        if (pointsList == null) {
+            return;
+        }
+        for (DriveStep step : mDrivePath.getSteps()
+             ) {
+            AMapUtil.convertXYPointArrayList(step.getPolyline(), pointsList);
+        }
     }
 
     @Override

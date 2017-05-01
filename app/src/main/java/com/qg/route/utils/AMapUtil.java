@@ -21,6 +21,7 @@ import com.amap.api.services.route.BusStep;
 import com.amap.api.services.route.RouteBusLineItem;
 import com.amap.api.services.route.RouteRailwayItem;
 import com.qg.route.R;
+import com.qg.route.bean.XYPoint;
 import com.qg.route.routemap.RouteActivity;
 
 
@@ -124,6 +125,18 @@ public class AMapUtil {
 		}
 		return lineShapes;
 	}
+
+	/**
+	 * 把集合体的LatLonPoint转化为集合体的XYPoint
+	 */
+	public static void convertXYPointArrayList(List<LatLonPoint> shapes, List<XYPoint> target) {
+
+		for (LatLonPoint point : shapes) {
+			LatLng latLngTemp = AMapUtil.convertToLatLng(point);
+			target.add(new XYPoint(latLngTemp.longitude, latLngTemp.latitude));
+		}
+	}
+
 
 	/**
 	 * long类型时间格式化

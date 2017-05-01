@@ -95,7 +95,6 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-
             }
         }.syncState();
     }

@@ -37,12 +37,20 @@ class UserHeadAdapter extends RecyclerView.Adapter<UserHeadAdapter.MyViewHolder>
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.userHead.setImageResource(R.mipmap.ic_launcher_round);
-        holder.username.setText(mUserName.get(position));
+        if (position == 4) {
+            holder.userHead.setImageResource(R.mipmap.points);
+            holder.username.setText("");
+        } else {
+            holder.userHead.setImageResource(R.mipmap.ic_launcher_round);
+            holder.username.setText(mUserName.get(position));
+        }
     }
 
     @Override
     public int getItemCount() {
+        if (mUserName.size() > 5) {
+            return 5;
+        }
         return mUserName.size();
     }
 
