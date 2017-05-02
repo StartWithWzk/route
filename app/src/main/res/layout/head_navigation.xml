@@ -4,24 +4,26 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/holo_blue_light"/>
+        android:background="@mipmap/background_navigation"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginLeft="36dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="24dp"
         android:layout_gravity="center_vertical">
-        <ImageView
+        <com.qg.route.custom.CircleImageVIew
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@mipmap/ic_launcher_round" />
+            android:scaleType="fitCenter"
+            android:src="@mipmap/ic_launcher" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textColor="@color/toolbarTextColor"
-            android:textSize="16dp"
+            android:textSize="@dimen/font_normal"
             android:text="zhikang_wen"/>
 
     </LinearLayout>

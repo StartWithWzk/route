@@ -4,77 +4,94 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/rect_round_white"
-    android:padding="12dp">
+    >
     <!--choose route type-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="64dp"
+        android:gravity="center_vertical">
         <ImageButton
             android:id="@+id/ib_walk"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@mipmap/ic_launcher"
+            android:src="@mipmap/unselected_walk"
             android:background="@null"/>
         <ImageButton
             android:id="@+id/ib_ride"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@mipmap/ic_launcher"
+            android:src="@mipmap/unselected_bike"
             android:background="@null"/>
         <ImageButton
             android:id="@+id/ib_bus"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@mipmap/ic_launcher"
+            android:src="@mipmap/unselected_bus"
             android:background="@null"/>
         <ImageButton
             android:id="@+id/ib_drive"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@mipmap/ic_launcher"
+            android:src="@mipmap/unselected_car"
             android:background="@null"/>
     </LinearLayout>
+    <!--divider-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/divider_line"/>
     <!--set start-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:orientation="horizontal">
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginLeft="12dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/ic_launcher_round"/>
+            android:src="@drawable/custom_start"/>
         <TextView
             android:id="@+id/tv_start"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:layout_gravity="center"
             android:textSize="@dimen/font_normal"
-            android:textColor="@color/font_black"/>
+            android:textColor="@color/font_black"
+            />
     </LinearLayout>
+    <!--divider-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/divider_line"/>
     <!--set end-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:orientation="horizontal">
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/ic_launcher_round"/>
+            android:layout_marginLeft="12dp"
+            android:src="@drawable/custom_end"/>
         <TextView
             android:id="@+id/tv_end"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:layout_gravity="center"
             android:clickable="true"
             android:textSize="@dimen/font_normal"
-            android:textColor="@color/font_black"/>
+            android:textColor="@color/font_black"
+            />
     </LinearLayout>
 </LinearLayout>

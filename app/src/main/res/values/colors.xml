@@ -6,6 +6,23 @@
     <color name="font_black">#dc000000</color>
 
     <!--toolbar-->
+    <color name="toolbar_color">@color/colorPrimary</color>
+    <color name="toolbarTextColor">@color/font_white</color>
+
+    <!--background-->
+    <color name="background">#f4f4f4</color>
+
+    <!--item background-->
+    <color name="item_background">#fdfdfe</color>
+
+    <!--divider-->
+    <color name="divider_line">#d8d8d8</color>
+
+    <!--polyline-->
+    <color name="polyline">#537edc</color>
+    <!--hint polyline-->
+    <color name="polyline_hint">#bf537edc</color>
+
     <color name="toolbar_color">#6772fe</color>
     <color name="toolbarTextColor">#ffffff</color>
     <color name="tabColor">#f7f4f4</color>
