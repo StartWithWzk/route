@@ -7,7 +7,7 @@
 
     <!--toolbar-->
     <color name="toolbar_color">@color/colorPrimary</color>
-    <color name="toolbarTextColor">@color/font_white</color>
+    <color name="toolbarTextColor">#ffffff</color>
 
     <!--background-->
     <color name="background">#f4f4f4</color>
@@ -23,8 +23,6 @@
     <!--hint polyline-->
     <color name="polyline_hint">#bf537edc</color>
 
-    <color name="toolbar_color">#6772fe</color>
-    <color name="toolbarTextColor">#ffffff</color>
     <color name="tabColor">#f7f4f4</color>
     <color name="tabTextColor">#b4aeae</color>
 
@@ -32,4 +30,6 @@
     <color name="red_point">#f22525</color>
 
     <color name="white">#ffffff</color>
+    <color name="font_gray">#d4d0d0</color>
+    <color name="font_white">#ffffff</color>
 </resources>
