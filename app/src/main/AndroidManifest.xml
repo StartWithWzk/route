@@ -50,12 +50,9 @@
             <!--</intent-filter>-->
         </activity>
         <activity android:name=".BaseActivity" />
-        <activity android:name=".routemap.SettingRouteActivity" >
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+        <activity android:name=".routemap.SettingRouteActivity" />
+        <activity android:name=".route.GroupDetailActivity" >
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
         </activity>
 
         <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->

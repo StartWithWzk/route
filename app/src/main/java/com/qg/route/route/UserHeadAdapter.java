@@ -18,14 +18,17 @@ import java.util.ArrayList;
  */
 
 class UserHeadAdapter extends RecyclerView.Adapter<UserHeadAdapter.MyViewHolder> {
+    // 用于限制个数
+    private final boolean isLimit;
     private ArrayList<String> mUserName;
     private LayoutInflater mLayoutInflater;
     private int mResource;
 
-    public UserHeadAdapter(Context context, int item_user_headview, ArrayList<String> mUserName) {
+    public UserHeadAdapter(Context context, int item_user_headview, ArrayList<String> mUserName, boolean isLimit) {
         mLayoutInflater = LayoutInflater.from(context);
         mResource = item_user_headview;
         this.mUserName = mUserName;
+        this.isLimit = isLimit;
     }
 
     @Override
@@ -37,9 +40,14 @@ class UserHeadAdapter extends RecyclerView.Adapter<UserHeadAdapter.MyViewHolder>
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        if (position == 4) {
-            holder.userHead.setImageResource(R.mipmap.points);
-            holder.username.setText("");
+        if (isLimit) {
+            if (position == 4) {
+                holder.userHead.setImageResource(R.mipmap.points);
+                holder.username.setText("");
+            } else {
+                holder.userHead.setImageResource(R.mipmap.ic_launcher_round);
+                holder.username.setText(mUserName.get(position));
+            }
         } else {
             holder.userHead.setImageResource(R.mipmap.ic_launcher_round);
             holder.username.setText(mUserName.get(position));
@@ -48,7 +56,7 @@ class UserHeadAdapter extends RecyclerView.Adapter<UserHeadAdapter.MyViewHolder>
 
     @Override
     public int getItemCount() {
-        if (mUserName.size() > 5) {
+        if (isLimit && mUserName.size() > 5) {
             return 5;
         }
         return mUserName.size();

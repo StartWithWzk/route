@@ -15,11 +15,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.qg.route.R;
 import com.qg.route.animition.ZoomOutPageTransformer;
 import com.qg.route.bean.Trace;
 import com.qg.route.bean.XYPoint;
+import com.qg.route.main.MainActivity;
 import com.qg.route.routemap.RouteActivity;
 
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class RouteFragment extends Fragment{
 
     private ViewPager mViewPage;
     private RecyclerView mUserHeadRV;
+    private RelativeLayout mGroupName;
 
     @Nullable
     @Override
@@ -65,7 +68,14 @@ public class RouteFragment extends Fragment{
         // 设置为横向
         mUserHeadRV.setLayoutManager(
                 new GridLayoutManager(getActivity(), 5));
-        mUserHeadRV.setAdapter(new UserHeadAdapter(getActivity(), R.layout.item_user_headview, mUserName));
+        mUserHeadRV.setAdapter(new UserHeadAdapter(getActivity(), R.layout.item_user_headview, mUserName, true));
+        mGroupName = (RelativeLayout) view.findViewById(R.id.rl_group_name);
+        mGroupName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GroupDetailActivity.actionStart(getActivity());
+            }
+        });
     }
 
     private ArrayList<View> mImag = new ArrayList<>();

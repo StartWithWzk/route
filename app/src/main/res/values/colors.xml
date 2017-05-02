@@ -12,7 +12,7 @@
     <color name="toolbarTextColor">@color/font_white</color>
 
     <!--background-->
-    <color name="background_main">#f4f4f4</color>
+    <color name="background">#f4f4f4</color>
 
     <!--item background-->
     <color name="item_background">#fdfdfe</color>

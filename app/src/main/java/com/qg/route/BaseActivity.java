@@ -1,5 +1,6 @@
 package com.qg.route;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -20,6 +21,8 @@ import java.util.List;
  */
 
 public class BaseActivity extends AppCompatActivity {
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +82,29 @@ public class BaseActivity extends AppCompatActivity {
         for ( String permission : permissions) {
             Log.d("PERMISSION", "requestCode: "+ requestCode + " : " + permission + " : "
                     + (grantResults[0] == PackageManager.PERMISSION_GRANTED));
+        }
+    }
+    
+    /**
+     * 显示进度框
+     */
+    protected void showProgressDialog(String content) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+        }
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(true);
+        progressDialog.setMessage(content);
+        progressDialog.show();
+    }
+
+    /**
+     * 隐藏进度框
+     */
+    protected void dissmissProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
         }
     }
 
