@@ -542,9 +542,39 @@ public class RouteFragment extends Fragment implements View.OnClickListener {
                                 RequestResult requestResult = JsonUtil.toObject(body.charStream(), RequestResult.class);
                                 if (requestResult.getState() == 172) {
                                     int groupId = JsonUtil.toObject(requestResult.getData().toString(), Integer.class);
-                                    toChatActivity(mChatRoom);
+                                    intoNewGroup(groupId);
                                 }
                             }
+                        }
+                        private void intoNewGroup(int id){
+                            HttpUtil.DoGet(Constant.GroupUrl.GROUP_INFOMATION + id, new HttpUtil.HttpConnectCallback() {
+                                @Override
+                                public void onSuccess(Response response) {
+                                    if(response != null){
+                                        RequestResult<ChatRoom> roomRequestResult = null;
+                                        Gson gson = new Gson();
+                                        try{
+                                            roomRequestResult = gson.fromJson(response.body().charStream() , new TypeToken<RequestResult<ChatRoom>>(){}.getType());
+                                        }catch (Exception e){
+                                            e.printStackTrace();
+                                        }
+                                        if(roomRequestResult != null && roomRequestResult.getData()!= null){
+                                            ChatRoom chatRoom = roomRequestResult.getData();
+                                            toChatActivity(chatRoom);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(IOException e) {
+
+                                }
+
+                                @Override
+                                public void onFailure() {
+
+                                }
+                            } , false);
                         }
 
                         @Override
