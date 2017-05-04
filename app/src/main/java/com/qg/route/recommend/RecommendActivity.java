@@ -1,14 +1,17 @@
 package com.qg.route.recommend;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.gson.reflect.TypeToken;
 import com.qg.route.BaseActivity;
@@ -18,6 +21,7 @@ import com.qg.route.bean.User;
 import com.qg.route.utils.Constant;
 import com.qg.route.utils.HttpUtil;
 import com.qg.route.utils.JsonUtil;
+import com.qg.route.utils.ToastUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +34,7 @@ import okhttp3.ResponseBody;
  * 推荐好友页面
  */
 
-public class RecommendActivity extends BaseActivity{
+public class RecommendActivity extends BaseActivity implements RecommendAdapter.OnItemSelectedListener {
 
     private static final String TAG = "RECOMMENDACTIVITY";
     private Toolbar mToolbar;
@@ -94,6 +98,7 @@ public class RecommendActivity extends BaseActivity{
         mRV.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mUserList = new ArrayList<User>();
         mRV.setAdapter(mAdapter = new RecommendAdapter(this, mUserList));
+        mAdapter.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -108,5 +113,50 @@ public class RecommendActivity extends BaseActivity{
     public static void actionStart(Context context) {
         Intent intent = new Intent(context, RecommendActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onItemClick(View view, final int position) {
+        new AlertDialog.Builder(this).setTitle("系统提醒")
+                .setMessage("是否请求添加为好友？")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        HttpUtil.DoGet(Constant.InformationUrl.INFORMATION_ADD + mUserList.get(position).getUserid(),
+                                new HttpUtil.HttpConnectCallback() {
+                            @Override
+                            public void onSuccess(Response response) {
+                                ResponseBody body = response.body();
+                                if (body != null) {
+                                    final RequestResult requestResult = JsonUtil.toObject(body.charStream(), RequestResult.class);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            // 显示添加好友信息反馈
+                                            ToastUtil.show(RecommendActivity.this, requestResult.getStateInfo());
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(IOException e) {
+
+                            }
+
+                            @Override
+                            public void onFailure() {
+
+                            }
+                        }, false);
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setCancelable(true)
+                .show();
     }
 }

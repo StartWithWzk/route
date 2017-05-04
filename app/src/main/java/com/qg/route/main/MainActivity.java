@@ -139,6 +139,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private void setUpToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.tb_main);
         setSupportActionBar(mToolbar);
+        // 这句要放在setSupportActionBar后面才回生效
+        mToolbar.setNavigationIcon(R.mipmap.menu_button);
     }
 
     /**

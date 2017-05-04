@@ -7,24 +7,31 @@
                                     style="@style/AppCardView"
     >
     <RelativeLayout
+        android:id="@+id/rl_click_help"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp">
-        <ImageView
-            android:id="@+id/civ_head"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+        <android.support.v7.widget.CardView
+            android:id="@+id/cv_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
-            android:scaleType="fitCenter"
-            android:src="@mipmap/ic_launcher"/>
+            app:cardCornerRadius="32dp">
+            <ImageView
+                android:id="@+id/civ_head"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/route"/>
+        </android.support.v7.widget.CardView>
+
         <TextView
             android:id="@+id/tv_recommend_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/civ_head"
-            android:layout_alignTop="@id/civ_head"
+            android:layout_toRightOf="@id/cv_temp"
+            android:layout_alignTop="@id/cv_temp"
             android:layout_marginTop="8dp"
-            android:text="马思纯"
             android:textSize="@dimen/font_normal"
             android:textColor="@color/font_black"/>
         <ImageView
@@ -32,9 +39,8 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginBottom="8dp"
-            android:layout_toRightOf="@id/civ_head"
-            android:layout_alignBottom="@id/civ_head"
-            android:src="@mipmap/girl"/>
+            android:layout_toRightOf="@id/cv_temp"
+            android:layout_alignBottom="@id/cv_temp" />
         <TextView
             android:id="@+id/tv_similarity"
             android:layout_width="wrap_content"

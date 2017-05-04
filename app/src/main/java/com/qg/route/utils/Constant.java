@@ -95,6 +95,7 @@ public class Constant {
     public static final class InformationUrl{
         public static final String INFORMATION_GET = BASE_URL + "/info/list/";
         public static final String HANDLE_INFORMATION = BASE_URL + "/info/handle/";
+        public static final String INFORMATION_ADD = BASE_URL + "/info/add/";
     }
 
     // 获得头像

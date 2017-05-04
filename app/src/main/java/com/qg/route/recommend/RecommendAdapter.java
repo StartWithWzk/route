@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -23,6 +24,15 @@ import java.util.ArrayList;
 class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.ViewHolder> {
     private final Context mContext;
     private final ArrayList<User> mUserList;
+    private OnItemSelectedListener mListener;
+
+    public interface OnItemSelectedListener {
+        void onItemClick(View view, int position);
+    }
+
+    public void setOnItemSelectedListener(OnItemSelectedListener listener) {
+        mListener = listener;
+    }
 
     public RecommendAdapter(Context context, ArrayList<User> userList) {
         mContext = context;
@@ -35,7 +45,7 @@ class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.ViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         User user = mUserList.get(position);
         Glide.with(mContext).load(URLHelper.getPic(user.getUserid())).error(R.mipmap.head_default).into(holder.mHeadView);
         if (user.getSex() == 0) { // 男
@@ -45,6 +55,12 @@ class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.ViewHolder>
         }
         holder.mUserName.setText(user.getName());
         holder.mSimilarity.setText(user.getSuitability());
+        holder.mRelativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onItemClick(v, position);
+            }
+        });
     }
 
     @Override
@@ -61,6 +77,7 @@ class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.ViewHolder>
         private TextView mUserName;
         private ImageView mSex;
         private TextView mSimilarity;
+        private RelativeLayout mRelativeLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -68,6 +85,7 @@ class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.ViewHolder>
             mUserName  = (TextView) itemView.findViewById(R.id.tv_recommend_name);
             mSex = (ImageView) itemView.findViewById(R.id.iv_recommend_sex);
             mSimilarity = (TextView) itemView.findViewById(R.id.tv_similarity);
+            mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.rl_click_help);
         }
     }
 }
