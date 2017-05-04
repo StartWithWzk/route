@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -175,6 +176,7 @@ public class MomentsActivity extends AppCompatActivity {
 
     private void initUI() {
         setSupportActionBar(mToolBar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mAdapter = new MomentsPagerAdapter(getSupportFragmentManager());
         mAdapter.addFragment(MomentsFragment.newInstance(mId) , MOMENTS_FRAGMENT_TITLE);
         if(mId.equals(mMyId))
@@ -247,6 +249,9 @@ public class MomentsActivity extends AppCompatActivity {
             case R.id.add_friend :
                 addFriend();
                 break;
+            case android.R.id.home :
+                finish();
+                break;
 
         }
         return super.onOptionsItemSelected(item);
@@ -307,13 +312,26 @@ public class MomentsActivity extends AppCompatActivity {
 
         if(resultCode == Activity.RESULT_OK && requestCode == 1){
             mImageUri = data.getData();
-            ContentResolver cr = this.getContentResolver();
-            Cursor c = cr.query(mImageUri, null, null, null, null);
-            c.moveToFirst();
-            //这是获取的图片保存在sdcard中的位置  
-            String imagePath = c.getString(c.getColumnIndex("_data"));
             List<File> files = new ArrayList<>();
-            files.add(new File(imagePath));
+            try {
+                ContentResolver cr = this.getContentResolver();
+                Cursor c = cr.query(mImageUri, null, null, null, null);
+                c.moveToFirst();
+                //这是获取的图片保存在sdcard中的位置  
+                String imagePath = c.getString(c.getColumnIndex("_data"));
+                files.add(new File(imagePath));
+            }catch (Exception e){
+                e.printStackTrace();
+                String[] proj = {MediaStore.Images.Media.DATA};
+                Cursor cursor = managedQuery(mImageUri, proj, null, null, null);
+                if(cursor!=null) {
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    cursor.moveToFirst();
+                    String path = cursor.getString(column_index);// 图片在的路径  
+                    files.add(new File(path));
+                }
+            }
+
             List<String> picKeys = new ArrayList<>();
             picKeys.add(PICTURE_KEY);
 
