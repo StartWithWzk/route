@@ -41,7 +41,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".information.InformationActivity"/>
         <activity android:name=".moments.UpdateDataActivity"/>
         <activity android:name=".login.LoginActivity">
             <!--<intent-filter>-->
