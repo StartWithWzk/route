@@ -20,11 +20,14 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.bumptech.glide.Glide;
 import com.qg.route.BaseActivity;
 import com.qg.route.R;
+import com.qg.route.bean.Information;
 import com.qg.route.bean.RequestResult;
 import com.qg.route.bean.User;
 import com.qg.route.chat.ChatListFragment;
 import com.qg.route.chat.ChatService;
 import com.qg.route.contacts.ContactsActivity;
+import com.qg.route.information.InformationActivity;
+import com.qg.route.moments.MomentsActivity;
 import com.qg.route.moments.MomentsFragment;
 import com.qg.route.recommend.RecommendActivity;
 import com.qg.route.route.RouteFragment;
@@ -214,6 +217,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 RecommendActivity.actionStart(this);
                 return true;
             case R.id.menu_notification:
+                intent = new Intent(MainActivity.this , InformationActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.menu_order:
                 return true;
@@ -230,6 +235,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public void onClick(View v) {
-        // TODO: 2017/5/8 此处进行跳转个人信息页面 
+        Intent intent = MomentsActivity.newIntent(Constant.USER_ID , MainActivity.this);
+        startActivity(intent);
     }
 }

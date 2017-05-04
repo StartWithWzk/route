@@ -201,7 +201,7 @@ public class MomentsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(!mId.equals(mMyId)) {
+        if(mId.equals(mMyId)) {
             getMenuInflater().inflate(R.menu.moment_and_data, menu);
         }else{
             List< ChatBean> list = FriendDataBaseUtil.query(this , new String[]{FriendDataBaseHelper.USER_ID} , new String[]{mId} , null);
