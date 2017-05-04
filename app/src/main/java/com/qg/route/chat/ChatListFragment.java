@@ -21,6 +21,7 @@ import com.qg.route.moments.ChatGlideUtil;
 import com.qg.route.utils.ChatDataBaseHelper;
 import com.qg.route.utils.ChatDataBaseUtil;
 import com.qg.route.utils.Constant;
+import com.qg.route.utils.FriendDataBaseHelper;
 import com.qg.route.utils.FriendDataBaseUtil;
 
 import java.util.ArrayList;
@@ -82,6 +83,8 @@ public class ChatListFragment extends Fragment {
         executorService.execute(getFriendListRunnable());
         return view;
     }
+
+
 
 
     private Runnable getFriendListRunnable(){
@@ -153,9 +156,16 @@ public class ChatListFragment extends Fragment {
             Intent intent = new Intent(getActivity() , ChatActivity.class);
             intent.putExtra(ChatFragment.USER_NAME , mFriend.getName());
             intent.putExtra(ChatFragment.USER_ID , mFriend.getUser_id());
+            intent.putExtra(ChatFragment.IS_CIRCLE , mFriend.getIs_circle());
+            HashMap<String , String> map = new HashMap<>();
+            map.put(ChatDataBaseHelper.IS_NEW , "0");
+            ChatDataBaseUtil.updata(getActivity() , map , new String[]{ChatDataBaseHelper.FROM} , new String[]{mFriend.getUser_id()});
             startActivity(intent);
         }
     }
+
+
+
 
     private class ChatAdapter extends RecyclerView.Adapter<ChatHolder>{
 
@@ -170,7 +180,6 @@ public class ChatListFragment extends Fragment {
         public void onBindViewHolder(ChatHolder holder, int position) {
             ChatBean user = mFriends.get(position);
             holder.bindChatList(user);
-
             executorService.execute(getNewsCountRunnable(holder , user));
         }
 

@@ -184,8 +184,9 @@ public class ChatFragment extends Fragment {
         return new Runnable() {
             @Override
             public void run() {
-                List<ChatLog> list = ChatDataBaseUtil.query(getActivity() , new String[]{
-                    ChatDataBaseHelper.FROM , ChatDataBaseHelper.TO} ,new String[]{MY_ID , mFriendId},null );
+                List<ChatLog> list = new ArrayList<>();
+                list.addAll( ChatDataBaseUtil.query(getActivity() , new String[]{
+                    ChatDataBaseHelper.FROM , ChatDataBaseHelper.TO} ,new String[]{MY_ID , mFriendId},null ) );
                 if(list != null && list.size()>0) {
                     list.addAll(ChatDataBaseUtil.query(getActivity(),
                             new String[]{ChatDataBaseHelper.TO , ChatDataBaseHelper.FROM}, new String[]{MY_ID , mFriendId}, null));
@@ -204,6 +205,11 @@ public class ChatFragment extends Fragment {
                             return result;
                         }
                     });
+                    for(int i = 0 ; i < list.size() ; i++){
+                        if(list.get(i).getFlag() == 3){
+                            list.remove(i);
+                        }
+                    }
                 }
                 mContents.clear();
                 mContents.addAll(list);
@@ -250,17 +256,17 @@ public class ChatFragment extends Fragment {
             super(itemView);
             mFriendText = (TextView) itemView.findViewById(R.id.friend_text);
             mFriendImage = (ImageView) itemView.findViewById(R.id.chat_content_friend_image);
+        }
+        public void bindChatContent(final ChatLog chatLog){
+            mFriendText.setText(chatLog.getContent());
+            loadImage(chatLog.getSendId()+"" , mFriendImage);
             mFriendImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = MomentsActivity.newIntent(mFriendId , getActivity());
+                    Intent intent = MomentsActivity.newIntent(chatLog.getSendId()+"" , getActivity());
                     startActivity(intent);
                 }
             });
-        }
-        public void bindChatContent(ChatLog chatLog){
-            mFriendText.setText(chatLog.getContent());
-            loadImage(chatLog.getSendId()+"" , mFriendImage);
         }
     }
 

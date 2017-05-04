@@ -27,7 +27,7 @@ public class ChatActivity extends SingleFragmentActivity{
         Intent i = getIntent();
         name = i.getStringExtra(ChatFragment.USER_NAME);
         id = i.getStringExtra(ChatFragment.USER_ID);
-        isCircle= i.getBooleanExtra(ChatFragment.IS_CIRCLE , false);
+        isCircle= i.getBooleanExtra(ChatFragment.IS_CIRCLE ,true);
         getSupportActionBar().setTitle(name);
         return ChatFragment.newInstance(name , id , isCircle);
     }

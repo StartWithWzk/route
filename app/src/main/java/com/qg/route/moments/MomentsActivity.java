@@ -86,6 +86,7 @@ public class MomentsActivity extends AppCompatActivity {
     private String mUpdateImageUrl = Constant.MomentsUrl.UPDATE_IMAGE;
     private String mDeleteFriendUrl = Constant.MomentsUrl.DELETE_FRIEND;
     private String mGetPersonDataUrl = Constant.MomentsUrl.PERSON_DATA_GET;
+    private String mAddFriendUrl = Constant.ChatUrl.ADD_FRIEND;
 
     private MomentsPagerAdapter mAdapter;
 
@@ -200,9 +201,9 @@ public class MomentsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(!mId.equals(mMyId))
-            getMenuInflater().inflate(R.menu.friend_operation , menu);
-        else{
+        if(!mId.equals(mMyId)) {
+            getMenuInflater().inflate(R.menu.moment_and_data, menu);
+        }else{
             List< ChatBean> list = FriendDataBaseUtil.query(this , new String[]{FriendDataBaseHelper.USER_ID} , new String[]{mId} , null);
             if(list != null && list.size() > 0){
                 getMenuInflater().inflate(R.menu.friend_operation , menu);
@@ -244,9 +245,30 @@ public class MomentsActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.add_friend :
-                
+                addFriend();
+                break;
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void addFriend(){
+        HttpUtil.DoGet(mAddFriendUrl + mId, new HttpUtil.HttpConnectCallback() {
+            @Override
+            public void onSuccess(Response response) {
+
+            }
+
+            @Override
+            public void onFailure(IOException e) {
+
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        } , false);
     }
 
     private class MomentsPagerAdapter extends FragmentPagerAdapter{

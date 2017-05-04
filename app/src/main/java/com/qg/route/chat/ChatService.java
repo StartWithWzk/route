@@ -19,6 +19,7 @@ import com.google.gson.reflect.TypeToken;
 import com.qg.route.R;
 import com.qg.route.bean.ChatLog;
 import com.qg.route.bean.RequestResult;
+import com.qg.route.bean.User;
 import com.qg.route.main.MainActivity;
 import com.qg.route.utils.ChatDataBaseHelper;
 import com.qg.route.utils.ChatDataBaseUtil;
@@ -48,6 +49,7 @@ import okio.ByteString;
 public class ChatService extends Service {
 
     private final static String OFFLINE_MESSAGE_URL = Constant.ChatUrl.OFFLINE_MESSAGE_URL;
+    private final static String GET_DATA = Constant.MomentsUrl.PERSON_DATA_GET ;
     private final static String CHAT_URL = Constant.ChatUrl.WEB_SOCKET;
     public final static String CHANGE_CONTENT = "com.qg.route.chatservice.CHANGE_CONTENT";
 
@@ -68,12 +70,15 @@ public class ChatService extends Service {
                     }catch (Exception e){
                         e.printStackTrace();
                     }
-                    if(requestResult != null){
-                        String json = gson.toJson(requestResult.getData() , new TypeToken<List<ChatLog>>(){}.getType());
-                        JsonArray jsonArray = new JsonParser().parse(json).getAsJsonArray();
-                        for(JsonElement element : jsonArray){
-                            ChatLog chatLog = gson.fromJson(element , ChatLog.class);
-                            save(chatLog);
+                    if(requestResult != null && requestResult.getState() != -1){
+                        if(requestResult.getData() != null) {
+                            String json = gson.toJson(requestResult.getData(), new TypeToken<List<ChatLog>>() {
+                            }.getType());
+                            JsonArray jsonArray = new JsonParser().parse(json).getAsJsonArray();
+                            for (JsonElement element : jsonArray) {
+                                ChatLog chatLog = gson.fromJson(element, ChatLog.class);
+                                save(chatLog);
+                            }
                         }
                     }
                 }
@@ -91,16 +96,49 @@ public class ChatService extends Service {
         } ,false);
     }
 
-    private void save(ChatLog chatLog){
+    private void save(final ChatLog chatLog){
         Map<String,String> map = newMessage(chatLog);
         ChatDataBaseUtil.insert(ChatService.this , map);
 
-        //存到数据库
-        Map<String , String> map1 = new HashMap<String, String>();
-        map1.put(FriendDataBaseHelper.USER_ID , chatLog.getSendId()+"");
-        map1.put(FriendDataBaseHelper.LAST_CONTENT , chatLog.getContent());
-        map1.put(FriendDataBaseHelper.LAST_TIME , chatLog.getSendTime()+"");
-        FriendDataBaseUtil.replace(ChatService.this , map1);
+        HttpUtil.DoGet(GET_DATA + chatLog.getSendId(),
+                new HttpUtil.HttpConnectCallback() {
+            @Override
+            public void onSuccess(Response response) {
+                if(response != null){
+                    RequestResult<User> requestResult = null;
+                    Gson gson = new Gson();
+                    try {
+                        requestResult = gson.fromJson(response.body().charStream() , new TypeToken<RequestResult<User>>(){}.getType());
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    if(requestResult != null){
+                        if(requestResult.getData() != null) {
+                            User user = requestResult.getData();
+                            //存到数据库
+                            Map<String, String> map1 = new HashMap<String, String>();
+                            if (user != null) {
+                                map1.put(FriendDataBaseHelper.NAME, user.getName());
+                                map1.put(FriendDataBaseHelper.USER_ID, chatLog.getSendId() + "");
+                                map1.put(FriendDataBaseHelper.LAST_CONTENT, chatLog.getContent());
+                                map1.put(FriendDataBaseHelper.LAST_TIME, chatLog.getSendTime() +"");
+                                FriendDataBaseUtil.replace(ChatService.this, map1);
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(IOException e) {
+
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        } , false);
     }
 
     @Nullable

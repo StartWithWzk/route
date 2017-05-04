@@ -5,7 +5,7 @@ package com.qg.route.utils;
  */
 
 public class Constant {
-    public static String USER_ID = "22222";
+    public static String USER_ID = "11111";
     public static String PASSWORD = "123456";
     // base url
     // 远程URL
@@ -75,6 +75,7 @@ public class Constant {
         public static final String FRIEND_LIST_GET = BASE_URL + "/relation/list";
         public static final String ROOM_LIST_GET = BASE_URL + "/allroom";
         public static final String OFFLINE_MESSAGE_URL = BASE_URL + "/chat/list";
+        public static final String ADD_FRIEND = BASE_URL + "/info/add/";
     }
 
     // 动态

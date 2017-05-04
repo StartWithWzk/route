@@ -452,8 +452,10 @@ public class RouteFragment extends Fragment implements View.OnClickListener {
     }
 
     private void toChatActivity(ChatRoom chatRoom){
-        Intent intent = ChatActivity.newIntent(getActivity(),chatRoom.getRoomName(),chatRoom.getId()+"",true);
-        startActivity(intent);
+        if(chatRoom != null) {
+            Intent intent = ChatActivity.newIntent(getActivity(), chatRoom.getRoomName(), chatRoom.getId() + "", true);
+            startActivity(intent);
+        }
     }
 
     /**
