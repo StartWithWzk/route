@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6772fe</color>
-    <color name="colorPrimaryDark">#5361f7</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#6773ff</color>
+    <color name="colorPrimaryDark">#5361f8</color>
+    <color name="colorAccent">#fdfdfe</color>
     <color name="font_black">#dc000000</color>
 
     <!--toolbar-->
     <color name="toolbar_color">@color/colorPrimary</color>
-    <color name="toolbarTextColor">#ffffff</color>
+    <color name="toolbarTextColor">@color/font_white</color>
 
     <!--background-->
     <color name="background">#f4f4f4</color>
 
     <!--item background-->
     <color name="item_background">#fdfdfe</color>
+
+    <!--rank color-->
+    <color name="rank">#faa409</color>
 
     <!--divider-->
     <color name="divider_line">#d8d8d8</color>
@@ -30,6 +33,6 @@
     <color name="red_point">#f22525</color>
 
     <color name="white">#ffffff</color>
-    <color name="font_gray">#d4d0d0</color>
+    <color name="font_gray">#aeabab</color>
     <color name="font_white">#ffffff</color>
 </resources>

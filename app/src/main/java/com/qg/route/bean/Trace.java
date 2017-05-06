@@ -33,14 +33,19 @@ public class Trace implements Parcelable{
     private LatLonPoint mStartPoint;
     private LatLonPoint mEndPoint;
     private int selectedRouteType;
+    private String startName;
+    private String endName;
     private BusPath mBusPath;
     private RidePath mRidePath;
     private DrivePath mDrivePath;
     private WalkPath mWalkPath;
 
-    public Trace(LatLonPoint mStartPoint, LatLonPoint mEndPoint, int selectedRouteType, Path path) {
+    public Trace(LatLonPoint mStartPoint, LatLonPoint mEndPoint, String startName, String endName
+            , int selectedRouteType, Path path) {
         this.mStartPoint = mStartPoint;
         this.mEndPoint = mEndPoint;
+        this.startName = startName;
+        this.endName = endName;
         this.selectedRouteType = selectedRouteType;
         switch (selectedRouteType) {
             case Constant.ROUTE_TYPE_WALK:
@@ -57,11 +62,16 @@ public class Trace implements Parcelable{
         }
     }
 
-    public LatLonPoint getmStartPoint() {
+    public Route getRoute() {
+        return new Route(AMapUtil.convertXYPoint(mStartPoint), AMapUtil.convertXYPoint(mEndPoint),
+                startName, endName, selectedRouteType, getPoint());
+    }
+
+    public LatLonPoint getStartPoint() {
         return mStartPoint;
     }
 
-    public LatLonPoint getmEndPoint() {
+    public LatLonPoint getEndPoint() {
         return mEndPoint;
     }
 
@@ -69,24 +79,34 @@ public class Trace implements Parcelable{
         return selectedRouteType;
     }
 
-    public BusPath getmBusPath() {
+    public String getStartName() {
+        return startName;
+    }
+
+    public String getEndName() {
+        return endName;
+    }
+
+    public BusPath getBusPath() {
         return mBusPath;
     }
 
-    public RidePath getmRidePath() {
+    public RidePath getRidePath() {
         return mRidePath;
     }
 
-    public DrivePath getmDrivePath() {
+    public DrivePath getDrivePath() {
         return mDrivePath;
     }
 
-    public WalkPath getmWalkPath() {
+    public WalkPath getWalkPath() {
         return mWalkPath;
     }
 
     public List<XYPoint> getPoint() {
         List<XYPoint> pointsList = new ArrayList<>();
+        // 添加起点
+        pointsList.add(new XYPoint(mStartPoint.getLongitude(), mStartPoint.getLatitude()));
         // 初始化坐标集
         switch (selectedRouteType) {
             case Constant.ROUTE_TYPE_WALK:
@@ -94,6 +114,7 @@ public class Trace implements Parcelable{
                 break;
             case Constant.ROUTE_TYPE_RIDE:
                 getRidePoint(pointsList);
+                break;
             case Constant.ROUTE_TYPE_BUS:
                 getBusPoint(pointsList);
                 break;
@@ -103,6 +124,8 @@ public class Trace implements Parcelable{
             default:
                 break;
         }
+        // 添加终点
+        pointsList.add(new XYPoint(mEndPoint.getLongitude(), mEndPoint.getLatitude()));
 
         return pointsList;
     }
@@ -169,6 +192,8 @@ public class Trace implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(selectedRouteType);
+        dest.writeString(startName);
+        dest.writeString(endName);
         dest.writeParcelable(mStartPoint, flags);
         dest.writeParcelable(mEndPoint, flags);
         dest.writeParcelable(mWalkPath, flags);
@@ -191,6 +216,8 @@ public class Trace implements Parcelable{
 
     protected Trace(Parcel in) {
         selectedRouteType = in.readInt();
+        startName = in.readString();
+        endName = in.readString();
         mStartPoint = in.readParcelable(LatLonPoint.class.getClassLoader());
         mEndPoint = in.readParcelable(LatLonPoint.class.getClassLoader());
         mWalkPath = in.readParcelable(WalkPath.class.getClassLoader());

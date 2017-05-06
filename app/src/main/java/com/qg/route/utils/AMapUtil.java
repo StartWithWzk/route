@@ -132,11 +132,13 @@ public class AMapUtil {
 	public static void convertXYPointArrayList(List<LatLonPoint> shapes, List<XYPoint> target) {
 
 		for (LatLonPoint point : shapes) {
-			LatLng latLngTemp = AMapUtil.convertToLatLng(point);
-			target.add(new XYPoint(latLngTemp.longitude, latLngTemp.latitude));
+			target.add(convertXYPoint(point));
 		}
 	}
 
+	public static XYPoint convertXYPoint(LatLonPoint shapes) {
+		return new XYPoint(shapes.getLongitude(), shapes.getLatitude());
+	}
 
 	/**
 	 * long类型时间格式化

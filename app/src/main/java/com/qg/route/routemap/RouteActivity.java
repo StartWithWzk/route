@@ -25,6 +25,10 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.geocoder.GeocodeResult;
+import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeQuery;
+import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.help.Tip;
 import com.amap.api.services.route.BusPath;
 import com.amap.api.services.route.BusRouteResult;
@@ -58,7 +62,7 @@ import overlay.WalkRouteOverlay;
  * 选择路线功能
  */
 
-public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChangeListener, AMap.OnMapLoadedListener, ChooseRoute.OnRouteClickListener, RouteSearch.OnRouteSearchListener, RouteSelectedAdapter.OnClickListener {
+public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChangeListener, AMap.OnMapLoadedListener, ChooseRoute.OnRouteClickListener, RouteSearch.OnRouteSearchListener, RouteSelectedAdapter.OnClickListener, GeocodeSearch.OnGeocodeSearchListener {
     private static final String TAG = "ROUTEACTIVITY";
 
     // 权限请求
@@ -92,22 +96,26 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
     private AMap aMap;
     private MapView mapView;
     private RouteSearch mRouteSearch;
+    private GeocodeSearch geocoderSearch; // 逆地理编码
 
     // search result
     private WalkRouteResult mWalkRouteResult;
     private BusRouteResult mBusRouteResult;
     private DriveRouteResult mDriveRouteResult;
+
     private RideRouteResult mRideRouteResult;
 
     // adapter and data
     private RouteSelectedAdapter mSelectedAdapter;
-
     private ChooseRoute chooseRoute;
     private Toolbar mToolBar;
-    private RecyclerView mGridView;
 
+    private RecyclerView mGridView;
     private int selectedRoute = 0;
     private int selectedPath;
+    private String mStartName;
+    private String mEndName;
+    private String mOirginName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -149,13 +157,15 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
         mRouteSearch.setRouteSearchListener(this);
         chooseRoute = (ChooseRoute) findViewById(R.id.route_choose);
         chooseRoute.setOnRouteClickListener(this);
+        // 逆地理编码
+        geocoderSearch = new GeocodeSearch(this);
+        geocoderSearch.setOnGeocodeSearchListener(this);
     }
 
     /**
      * 设置一些amap的属性
      */
     private void setUpMap() {
-
         aMap.getUiSettings().setMyLocationButtonEnabled(true);// 设置默认定位按钮是否显示
         aMap.getUiSettings()
                 .setZoomPosition(AMapOptions.ZOOM_POSITION_RIGHT_CENTER);
@@ -192,6 +202,17 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
         mLatitude = location.getLatitude();
         mStartPoint = new LatLonPoint(mLatitude, mLongitude);
         Log.d(TAG, "onMyLocationChange: " + mLongitude + ":" + mLatitude);
+        // 此处是查询定位点的位置
+        getAddress(mStartPoint);
+    }
+
+    /**
+     * 响应逆地理编码
+     */
+    public void getAddress(final LatLonPoint latLonPoint) {
+        RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 200,
+                GeocodeSearch.AMAP);// 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
+        geocoderSearch.getFromLocationAsyn(query);// 设置异步逆地理编码请求
     }
 
     @Override
@@ -459,11 +480,11 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
         if (requestCode == REQUEST_SET_ROUTE_START) {
             Tip tip = data.getParcelableExtra(ROUTE_NAME);
             mStartPoint = tip.getPoint();
-            chooseRoute.setStartText(tip.getName());
+            chooseRoute.setStartText(mStartName = tip.getName());
         } else if (requestCode == REQUEST_SET_ROUTE_END) {
             Tip tip = data.getParcelableExtra(ROUTE_NAME);
             mEndPoint = tip.getPoint();
-            chooseRoute.setEndText(tip.getName());
+            chooseRoute.setEndText(mEndName = tip.getName());
         }
     }
 
@@ -597,25 +618,28 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
                 ToastUtil.show(this, "还没选择路线");
             } else {
                 Intent intent = new Intent();
+                if (mStartName == null) { // 如果起点名字是null，那么名字应该换回逆地理编码还原出来的名字
+                    mStartName = mOirginName;
+                }
                 switch (selectedRoute) {
                     case Constant.ROUTE_TYPE_WALK:
                         intent.putExtra(RouteFragment.TRACE,
-                                new Trace(mStartPoint, mEndPoint, selectedRoute,
+                                new Trace(mStartPoint, mEndPoint, mStartName, mEndName, selectedRoute,
                                         mWalkRouteResult.getPaths().get(selectedPath)));
                         break;
                     case Constant.ROUTE_TYPE_BUS:
                         intent.putExtra(RouteFragment.TRACE,
-                                new Trace(mStartPoint, mEndPoint, selectedRoute,
+                                new Trace(mStartPoint, mEndPoint, mStartName, mEndName, selectedRoute,
                                         mBusRouteResult.getPaths().get(selectedPath)));
                         break;
                     case Constant.ROUTE_TYPE_DRIVE:
                         intent.putExtra(RouteFragment.TRACE,
-                                new Trace(mStartPoint, mEndPoint, selectedRoute,
+                                new Trace(mStartPoint, mEndPoint, mStartName, mEndName, selectedRoute,
                                         mDriveRouteResult.getPaths().get(selectedPath)));
                         break;
                     case Constant.ROUTE_TYPE_RIDE:
                         intent.putExtra(RouteFragment.TRACE,
-                                new Trace(mStartPoint, mEndPoint, selectedRoute,
+                                new Trace(mStartPoint, mEndPoint, mStartName, mEndName, selectedRoute,
                                         mRideRouteResult.getPaths().get(selectedPath)));
                         break;
                     default:
@@ -641,5 +665,32 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
     public void onBackPressed() {
         super.onBackPressed();
         setResult(0);
+    }
+
+    /**
+     * 逆地理编码回调
+     */
+    @Override
+    public void onRegeocodeSearched(RegeocodeResult result, int rCode) {
+        if (rCode == AMapException.CODE_AMAP_SUCCESS) {
+            if (result != null && result.getRegeocodeAddress() != null
+                    && result.getRegeocodeAddress().getFormatAddress() != null) {
+                // // TODO: 2017/5/5 修改地址 
+                mOirginName = result.getRegeocodeAddress().getPois().get(0).getTitle() + "附近";
+
+            } else {
+                ToastUtil.show(RouteActivity.this, R.string.no_result);
+            }
+        } else {
+            ToastUtil.showerror(this, rCode);
+        }
+    }
+
+    /**
+     * 地理编码查询回调
+     */
+    @Override
+    public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
+
     }
 }

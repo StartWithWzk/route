@@ -33,18 +33,18 @@
             android:name="com.amap.api.v2.apikey"
             android:value="d5ae59c6cc2ad59cf59ce481e29b296d"/>
 
-        <activity android:name=".main.MainActivity" >
-
-        </activity>
-        <activity android:name=".chat.ChatActivity"
-            android:theme="@style/Base.Theme.AppCompat.Light"
-            android:parentActivityName=".chat.ChatListActivity"/>
-        <activity android:name=".chat.ChatListActivity">
+        <activity android:name=".main.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".chat.ChatActivity"
+            android:theme="@style/Base.Theme.AppCompat.Light"
+            android:parentActivityName=".chat.ChatListActivity"/>
+        <activity android:name=".chat.ChatListActivity">
         </activity>
         <activity android:name=".routemap.RouteActivity"
             android:screenOrientation="portrait" />
@@ -63,8 +63,6 @@
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
-        <activity android:name=".BaseActivity" />
-        <activity android:name=".routemap.SettingRouteActivity" />
         <activity android:name=".route.GroupDetailActivity" >
 
         </activity>

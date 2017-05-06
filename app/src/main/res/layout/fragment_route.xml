@@ -81,6 +81,8 @@
                         android:layout_height="wrap_content"
                         android:text="起点"
                         android:textColor="@color/font_gray"
+                        android:maxLength="20"
+                        android:ellipsize="start"
                         android:layout_toRightOf="@id/iv_start_to_end"
                         android:layout_alignTop="@id/iv_start_to_end"/>
                     <TextView
@@ -89,6 +91,7 @@
                         android:layout_height="wrap_content"
                         android:text="起点内容"
                         android:textColor="@color/font_black"
+
                         android:layout_below="@id/tv_temp_start"
                         android:layout_toRightOf="@id/iv_start_to_end"/>
 
@@ -98,6 +101,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="终点"
+                        android:maxLength="20"
+                        android:ellipsize="start"
                         android:textColor="@color/font_gray"
                         android:layout_toRightOf="@id/iv_start_to_end"
                         android:layout_alignBottom="@id/iv_start_to_end"/>
@@ -106,7 +111,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="终点内容"
+                        android:ellipsize="end"
                         android:textColor="@color/font_black"
+                        android:maxLength="15"
                         android:layout_below="@id/tv_temp_end"
                         android:layout_toRightOf="@id/iv_start_to_end"/>
 
@@ -173,7 +180,7 @@
                         android:paddingRight="8dp"
                         >
                         <TextView
-                            android:id="@+id/tv_circle_name"
+                            android:id="@+id/tv_group_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -182,18 +189,18 @@
                             android:textColor="@color/colorPrimaryDark"/>
 
                         <TextView
-                            android:id="@+id/tv_circle_user_num"
+                            android:id="@+id/tv_group_num"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
-                            android:text="6人"
+                            android:text="0人"
                             android:textColor="@color/colorPrimaryDark"
                             />
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_toLeftOf="@id/tv_circle_user_num"
+                            android:layout_toLeftOf="@id/tv_group_num"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="8dp"
                             android:src="@mipmap/people_num"/>
@@ -218,6 +225,7 @@
                     </android.support.v7.widget.RecyclerView>
 
                     <Button
+                        android:id="@+id/btn_add_group"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/colorPrimary"
@@ -255,6 +263,7 @@
                 app:cardElevation="6dp"
                 style="@style/AppCardView" >
                 <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_business_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     >
@@ -264,5 +273,25 @@
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+    <!--浮动按钮-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fb_add_route"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/item_add"
+        app:backgroundTint="#fb7877"
+        app:rippleColor="#481d1d"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"/>
+
+    <android.support.v7.widget.ViewStubCompat
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background"
+        android:layout="@layout/empty_view"
+        />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="4dp">
+    <ImageView
+        android:id="@+id/iv_business"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginRight="16dp"
+        android:src="@mipmap/temp_picture"/>
+    <TextView
+        android:id="@+id/tv_business_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/iv_business"
+        android:layout_alignTop="@id/iv_business"
+        android:layout_marginTop="4dp"
+        android:textSize="@dimen/font_big"
+        android:textColor="@color/font_black"/>
+    <LinearLayout
+        android:id="@+id/ll_temp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp"
+        android:layout_toRightOf="@id/iv_business"
+        android:layout_alignBottom="@+id/iv_business">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/font_normal"
+            android:textColor="@color/rank"/>
+        <TextView
+            android:id="@+id/tv_rank"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/rank"
+            android:textSize="@dimen/font_normal"
+            />
+        <TextView
+            android:id="@+id/tv_consume"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:textColor="@color/font_black"
+            android:textSize="@dimen/font_normal" />
+    </LinearLayout>
+</RelativeLayout>

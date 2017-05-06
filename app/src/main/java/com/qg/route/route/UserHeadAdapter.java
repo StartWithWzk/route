@@ -9,8 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.qg.route.R;
+import com.qg.route.bean.User;
+import com.qg.route.utils.URLHelper;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -18,17 +23,29 @@ import java.util.ArrayList;
  */
 
 class UserHeadAdapter extends RecyclerView.Adapter<UserHeadAdapter.MyViewHolder> {
+    private Context mContext;
     // 用于限制个数
     private final boolean isLimit;
-    private ArrayList<String> mUserName;
+    private ArrayList<User> mUserList;
     private LayoutInflater mLayoutInflater;
     private int mResource;
+    private int limitNum;
 
-    public UserHeadAdapter(Context context, int item_user_headview, ArrayList<String> mUserName, boolean isLimit) {
+    public UserHeadAdapter(Context context, int resource, ArrayList<User> userList, int limitNum) {
+        mContext = context;
+        mLayoutInflater = LayoutInflater.from(mContext = context);
+        mResource = resource;
+        this.mUserList = userList;
+        this.limitNum = limitNum;
+        isLimit = true;
+    }
+
+    public UserHeadAdapter(Context context, int resource, ArrayList<User> userList) {
+        mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
-        mResource = item_user_headview;
-        this.mUserName = mUserName;
-        this.isLimit = isLimit;
+        mResource = resource;
+        this.mUserList = userList;
+        isLimit = false;
     }
 
     @Override
@@ -40,26 +57,23 @@ class UserHeadAdapter extends RecyclerView.Adapter<UserHeadAdapter.MyViewHolder>
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        if (isLimit) {
-            if (position == 4) {
-                holder.userHead.setImageResource(R.mipmap.points);
-                holder.username.setText("");
-            } else {
-                holder.userHead.setImageResource(R.mipmap.ic_launcher_round);
-                holder.username.setText(mUserName.get(position));
-            }
+        User user = mUserList.get(position);
+        if (isLimit && (position == limitNum - 1)) { // 最后一项
+            Glide.with(mContext).load(R.mipmap.points).into(holder.userHead);
+            holder.username.setText("");
         } else {
-            holder.userHead.setImageResource(R.mipmap.ic_launcher_round);
-            holder.username.setText(mUserName.get(position));
+            Glide.with(mContext).load(URLHelper.getPic(user.getUserid()))
+                    .error(R.mipmap.head_default).into(holder.userHead);
+            holder.username.setText(user.getName());
         }
     }
 
     @Override
     public int getItemCount() {
-        if (isLimit && mUserName.size() > 5) {
-            return 5;
+        if (isLimit && mUserList.size() > limitNum) {
+            return limitNum;
         }
-        return mUserName.size();
+        return mUserList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

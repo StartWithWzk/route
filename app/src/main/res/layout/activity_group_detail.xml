@@ -46,6 +46,7 @@
             android:textSize="18sp"/>
 
         <TextView
+            android:id="@+id/tv_group_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -71,6 +72,7 @@
             android:textSize="18sp"/>
 
         <TextView
+            android:id="@+id/tv_group_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -80,6 +82,7 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/btn_group_add"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -89,7 +92,6 @@
         android:layout_marginTop="48dp"
         android:text="加  入  圈  子"
         android:textSize="16dp"
-        android:textColor="@color/font_white"/>
-
+        android:textColor="@color/font_white" />
 
 </LinearLayout>

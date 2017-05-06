@@ -13,8 +13,9 @@ public class User {
     private String password;        //密码
     private String name;            //姓名
     private int sex;                //性别
-    private Date createDate;        //创建时间
+    private long createDate;        //创建时间
     private String introduction;    //个人简介
+    private String suitability;
 
     public User(){}
 
@@ -51,11 +52,11 @@ public class User {
         this.sex = sex;
     }
 
-    public Date getCreateDate() {
+    public long getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(long createDate) {
         this.createDate = createDate;
     }
 
