@@ -1,6 +1,7 @@
 package com.qg.route.moments;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,7 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.qg.route.R;
+import com.qg.route.bean.RequestResult;
+import com.qg.route.bean.User;
+import com.qg.route.utils.Constant;
+import com.qg.route.utils.HttpUtil;
+
+import java.io.IOException;
+
+import okhttp3.Response;
 
 /**
  * Created by Mr_Do on 2017/4/26.
@@ -17,12 +28,12 @@ import com.qg.route.R;
 public class DataFragment extends Fragment {
 
     private static final String ID = "com.qg.route.moments.DataFragment.ID";
-    private static final String DATA_URL = "";
+    private String mGetPersonDataUrl = Constant.MomentsUrl.PERSON_DATA_GET;
     private String mId;
-
+    private User mData;
+    private Handler mHandler = new Handler();
     private TextView mSex;
-    private TextView mSite;
-    private TextView mAge;
+    private TextView mName;
     private TextView mIntroduction;
 
     public static DataFragment newInstance(String id) {
@@ -39,23 +50,61 @@ public class DataFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_data , container , false);
 
         mSex = (TextView) view.findViewById(R.id.sex_data);
-        mSite = (TextView) view.findViewById(R.id.site_data);
-        mAge = (TextView) view.findViewById(R.id.age_data);
+        mName = (TextView) view.findViewById(R.id.name_data);
         mIntroduction = (TextView) view.findViewById(R.id.introduce_data);
-
-        initData();
-        initView();
         return view;
     }
 
-    private void initView() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
+    }
 
+    private void updateView() {
+        mName.setText(mData.getName());
+        mIntroduction.setText(mData.getIntroduction());
+        if(mData.getSex() == 1) {
+            mSex.setText("男");
+        }else{
+            mSex.setText("女");
+        }
     }
 
     private void initData() {
         mId = getArguments().getString(ID);
-        // TODO: 2017/4/29 加入网络操作
+        getPersonData();
     }
 
+    private void getPersonData() {
+        HttpUtil.DoGet(mGetPersonDataUrl + mId,
+                new HttpUtil.HttpConnectCallback() {
+                    @Override
+                    public void onSuccess(Response response) {
+                        Gson gson = new Gson();
+                        RequestResult<User> result = null;
+                        try {
+                            result = gson.fromJson(response.body().charStream(), new TypeToken<RequestResult<User>>(){}.getType());
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        if(result != null && result.getState() == 145){
+                            mData = result.getData();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    updateView();
+                                }
+                            });
+                        }
+                    }
+                    @Override
+                    public void onFailure(IOException e) {
 
+                    }
+                    @Override
+                    public void onFailure() {
+                    }
+                },false);
+    }
 }

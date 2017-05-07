@@ -31,8 +31,13 @@
 
     <!--chatList-->
     <color name="red_point">#f22525</color>
-
     <color name="white">#ffffff</color>
     <color name="font_gray">#aeabab</color>
     <color name="font_white">#ffffff</color>
+
+    <!--login-->
+    <color name="login_background">#e0749cfa</color>
+    <color name="login_button">#4598ff</color>
+
+    <color name="dark">#000000</color>
 </resources>

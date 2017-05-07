@@ -2,6 +2,8 @@ package com.qg.route.bean;
 
 
 
+import android.support.annotation.NonNull;
+
 import com.qg.route.utils.CommonDate;
 
 import java.util.Date;
@@ -11,17 +13,17 @@ import java.util.Date;
  * Created by FunriLy on 2017/4/8.
  * From small beginnings comes great things.
  */
-public class ChatLog {
+public class ChatLog{
 
     private int id;
     private int sendId;         //发送者
     private int receiveId;      //接收者
     private String content;     //交流内容
     private int flag;           //是否已读，0为未读，1为已读，3为群聊信息
-    private String sendTime;
+    private long sendTime;
 
     public ChatLog(){
-        this.sendTime = CommonDate.getNowDate().toString();
+        sendTime = new Date().getTime();
     }
 
     public ChatLog(int sendId, String sendName,
@@ -31,7 +33,7 @@ public class ChatLog {
         this.receiveId = receiveId;
         this.content = content;
         this.flag = 0;
-        this.sendTime = CommonDate.getNowDate().toString();
+        this.sendTime = new Date().getTime();
     }
 
     // get && set
@@ -72,11 +74,11 @@ public class ChatLog {
         this.flag = flag;
     }
 
-    public String getSendTime() {
+    public long getSendTime() {
         return sendTime;
     }
 
-    public void setSendTime(String date){
+    public void setSendTime(long date){
         sendTime = date;
     }
 
@@ -93,4 +95,5 @@ public class ChatLog {
                 ", sendTime=" + sendTime +
                 '}';
     }
+
 }
