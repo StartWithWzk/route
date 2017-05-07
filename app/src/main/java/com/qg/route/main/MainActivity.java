@@ -1,6 +1,7 @@
 package com.qg.route.main;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +18,9 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.qg.route.BaseActivity;
 import com.qg.route.R;
 import com.qg.route.bean.RequestResult;
+import com.qg.route.chat.ChatService;
+import com.qg.route.contacts.FriendListFragment;
+import com.qg.route.moments.MomentsFragment;
 import com.qg.route.recommend.RecommendActivity;
 import com.qg.route.route.RouteFragment;
 import com.qg.route.utils.Constant;
@@ -85,6 +89,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         String session = cookies.get(0);
                         HttpUtil.setSession(session);
                         Log.d(TAG, "onSuccess: login success!\nsession: " + session);
+                        Intent intent = ChatService.newIntent(MainActivity.this);
+                        startService(intent);
                     }
                     runOnUiThread(new Runnable() {
                         @Override
@@ -126,8 +132,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mViewpager = (ViewPager) findViewById(R.id.vp_main);
         mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
         mPagerAdapter.addFragment("路线", new RouteFragment());
-//        mPagerAdapter.addFragment("动态", new MomentsFragment());
-//        mPagerAdapter.addFragment("聊聊", new RouteFragment());
+        mPagerAdapter.addFragment("动态", MomentsFragment.newInstance(Constant.USER_ID));
+        mPagerAdapter.addFragment("聊聊", new FriendListFragment());
         mViewpager.setAdapter(mPagerAdapter);
 
         // viewpager tabs
