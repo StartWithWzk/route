@@ -1,32 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:contentPadding="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="10dp"
+        app:contentPadding="10dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="1dp"
         app:cardUseCompatPadding="true">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/item"
-                android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <android.support.v7.widget.CardView
+                android:id="@+id/moments_person_image_card"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:textSize="30dp"/>
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/comment_list"
+                app:cardCornerRadius="25dp"
+                >
+                <ImageView
+                    android:id="@+id/moments_person_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    />
+            </android.support.v7.widget.CardView>
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/item"
-                ></android.support.v7.widget.RecyclerView>
-        </RelativeLayout>
+                >
+                <TextView
+                    android:id="@+id/moments_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:minHeight="100dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_marginLeft="5dp"
+                    android:text="前排的样在"
+                    android:textSize="15dp" />
+                <ImageView
+                    android:id="@+id/moments_delete_button"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/moments_delete"
+                    />
+                <TextView
+                    android:id="@+id/moments_time"
+                    android:layout_width="100dp"
+                    android:layout_height="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="3dp"
+                    android:textSize="8dp"
+                    android:layout_below="@id/moments_name"/>
+                <TextView
+                    android:id="@+id/item"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="3dp"
+                    android:textColor="@color/dark"
+                    android:layout_below="@id/moments_time"
+                    android:textSize="15dp"/>
+                <ImageView
+                    android:id="@+id/moments_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true"
+                    android:maxWidth="150dp"
+                    android:maxHeight="150dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_below="@id/item"/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/comment_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/moments_image"
+                    android:layout_marginLeft="5dp"
+                    ></android.support.v7.widget.RecyclerView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_below="@+id/comment_list"
+                    android:layout_marginTop="18dp"
+                    android:orientation="horizontal">
+                    <ImageButton
+                        android:id="@+id/button_praise"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/no_praise"
+                        android:background="@color/white"
+                        android:layout_marginLeft="5dp"
+                        android:scaleType="centerInside"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:textSize="8dp"
+                        android:text="点赞"/>
+                    <ImageButton
+                        android:id="@+id/button_comment"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/comment"
+                        android:scaleType="centerInside"
+                        android:background="@color/white"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="130dp"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:paddingTop="5dp"
+                        android:textSize="8dp"
+                        android:text="评论"
+                        />
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
     </android.support.v7.widget.CardView>
 
 

@@ -17,4 +17,15 @@
     <string name="delete_friend">删除好友</string>
     <string name="number">账号</string>
     <string name="password">密码</string>
+    <string name="sign">登录</string>
+    <string name="login">注册</string>
+    <string name="publish_moment">发布动态</string>
+    <string name="update_data">修改资料</string>
+    <string name="publish_hint">说点什么吧...</string>
+    <string name="publish_button">发 布</string>
+    <string name="finish_update">修改完成</string>
+    <string name="data_name">姓名：</string>
+    <string name="update_tips_sex">填男或女(必填)</string>
+    <string name="update_tips_name">请输入姓名</string>
+    <string name="update_tips_introduction">介绍一下自己吧</string>
 </resources>

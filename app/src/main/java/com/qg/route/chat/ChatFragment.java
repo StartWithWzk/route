@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,17 +20,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 import com.qg.route.R;
 import com.qg.route.bean.ChatLog;
+import com.qg.route.login.LoginActivity;
+import com.qg.route.moments.ChatGlideUtil;
+import com.qg.route.moments.MomentsActivity;
 import com.qg.route.utils.ChatDataBaseHelper;
 import com.qg.route.utils.ChatDataBaseUtil;
+import com.qg.route.utils.Constant;
+import com.qg.route.utils.FriendDataBaseHelper;
+import com.qg.route.utils.FriendDataBaseUtil;
 import com.qg.route.utils.HttpUtil;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -41,9 +55,9 @@ public class ChatFragment extends Fragment {
 
     private final static int VIEW_TYPE_FRIEND = 0;
     private final static int VIEW_TYPE_ME = 1;
-    private final static String MY_ID = "11111";
-    private final static String LAND_URL = "http://118.89.54.17:8080/onway/user/login";
-    private String mFriendImageUrl = "http://118.89.54.17:8080/onway/picture/11111.jpg";
+    private final static String MY_ID = Constant.USER_ID;
+    private final static String MY_NAME = LoginActivity.sMyName;
+    private String mFriendImageUrl = Constant.ChatUrl.CHAT_HEAD_IMAGE_GET;
     private Handler mHandler = new Handler();
     private List<ChatLog> mContents;
     private ChatAdapter mChatAdapter;
@@ -74,10 +88,12 @@ public class ChatFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            ChatLog chatLog = toChatLog(intent.getStringExtra(ChatService.CHAT_LOG));
+            ChatLog chatLog = toChatLog(intent.getStringExtra(ChatService.CHANGE_CONTENT));
+            Log.e("ChatLog",chatLog.toString());
             if(mFragmentState != null || mFragmentState == "onResume"){
                 mContents.add(chatLog);
                 mChatAdapter.notifyDataSetChanged();
+                mChatContent.smoothScrollToPosition(mChatAdapter.getItemCount()-1);
             }
         }
 
@@ -86,6 +102,17 @@ public class ChatFragment extends Fragment {
             ChatLog chatLog = gson.fromJson(text , ChatLog.class);
             return chatLog;
         }
+    }
+
+    private Map<String,String> newMessage(ChatLog chatLog){
+        Map<String , String> map = new HashMap<String, String>();
+        map.put(ChatDataBaseHelper.USER_ID , chatLog.getId()+"");
+        map.put(ChatDataBaseHelper.FROM , chatLog.getSendId() + "");
+        map.put(ChatDataBaseHelper.TO , chatLog.getReceiveId() + "");
+        map.put(ChatDataBaseHelper.CONTENT , chatLog.getContent());
+        map.put(ChatDataBaseHelper.DATE , chatLog.getSendTime()+"");
+        map.put(ChatDataBaseHelper.IS_NEW , "0");
+        return map;
     }
 
     @Override
@@ -102,27 +129,37 @@ public class ChatFragment extends Fragment {
         mChatContent = (RecyclerView) view.findViewById(R.id.chat_content_list);
         mSendContent = (EditText) view.findViewById(R.id.send_edit_text);
         mSendButton = (Button) view.findViewById(R.id.send_button);
-
+        mContents = new ArrayList<>();
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HttpUtil.sendMessage(mSendContent.getText().toString());
-                mSendContent.setText(mSendContent.getText());
+                ChatLog chatLog = new ChatLog();
+                chatLog.setSendId(Integer.parseInt(MY_ID));
+                chatLog.setReceiveId(Integer.parseInt(mFriendId));
+                chatLog.setContent(mSendContent.getText().toString());
+                chatLog.setFlag(0);
+                String json = new Gson().toJson(chatLog , ChatLog.class);
+                Log.e("JSON",json);
+                Map<String , String> map = newMessage(chatLog);
+                ChatDataBaseUtil.insert(getActivity() , map);
+                HttpUtil.sendMessage(json);
+
+                //存到数据库
+                Map<String , String> map1 = new HashMap<String, String>();
+                map1.put(FriendDataBaseHelper.USER_ID , mFriendId);
+                map1.put(FriendDataBaseHelper.LAST_CONTENT , chatLog.getContent());
+                map1.put(FriendDataBaseHelper.LAST_TIME , chatLog.getSendTime()+"");
+                FriendDataBaseUtil.repleace(getActivity() , map1);
+
+                mContents.add(chatLog);
+                mChatAdapter.notifyDataSetChanged();
+                mSendContent.setText("");
+                mChatContent.smoothScrollToPosition(mChatAdapter.getItemCount()-1);
             }
         });
         mFriendId = getArguments().getString(USER_ID);
         mFriendName = getArguments().getString(USER_NAME);
 
-        mContents = new ArrayList<>();
-
-
-        // TODO: 2017/4/28 test
-        ChatLog chatLog1 = new ChatLog(Integer.parseInt(MY_ID),"哈哈",Integer.parseInt("22222"),"嘻嘻","HELLO,What's you name");
-        ChatLog chatLog2 = new ChatLog(Integer.parseInt("22222"),"哈哈",Integer.parseInt(MY_ID),"嘻嘻","HELLO,My name is HaHa");
-        for (int i = 0 ; i < 10 ; i++){
-            mContents.add(chatLog1);
-            mContents.add(chatLog2);
-        }
 
         mChatAdapter = new ChatAdapter();
         if(isAdded()) {
@@ -140,19 +177,27 @@ public class ChatFragment extends Fragment {
             public void run() {
                 List<ChatLog> list = ChatDataBaseUtil.query(getActivity() , new String[]{
                     ChatDataBaseHelper.FROM} ,new String[]{MY_ID},null );
-                list.addAll(ChatDataBaseUtil.query(getActivity() , new String[]{ChatDataBaseHelper.TO },new String[]{MY_ID},null));
-                Collections.sort(list , new Comparator<ChatLog>() {
-                    @Override
-                    public int compare(ChatLog chatLog, ChatLog t1) {
-                        if(Long.parseLong(chatLog.getSendTime()) - Long.parseLong(t1.getSendTime()) > 0){
-                            return 1;
-                        }else if(Long.parseLong(chatLog.getSendTime()) == Long.parseLong(t1.getSendTime())){
-                            return 0;
-                        }else{
-                            return -1;
+                if(list != null && list.size()>0) {
+                    list.addAll(ChatDataBaseUtil.query(getActivity(), new String[]{ChatDataBaseHelper.TO}, new String[]{MY_ID}, null));
+
+                    Collections.sort(list, new Comparator<ChatLog>() {
+                        @Override
+                        public int compare(ChatLog chatLog, ChatLog t1) {
+                            int result = 0;
+                            if (chatLog.getSendTime() > t1.getSendTime()) {
+                                result = 1;
+                            } else if (chatLog.getSendTime() == (t1.getSendTime())) {
+                                result = 0;
+                            } else {
+                                result = -1;
+                            }
+                            return result;
                         }
-                    }
-                });
+                    });
+                }
+                mContents.clear();
+                mContents.addAll(list);
+                Log.e("mContents" , mContents.toString());
                 if(mChatContent != null && mChatContent.getAdapter() != null)
                     mHandler.post(new Runnable() {
                         @Override
@@ -173,10 +218,17 @@ public class ChatFragment extends Fragment {
             super(itemView);
             mMyText = (TextView) itemView.findViewById(R.id.my_text);
             mMyImage = (ImageView) itemView.findViewById(R.id.chat_content_my_image);
+            mMyImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = MomentsActivity.newIntent(MY_ID , getActivity());
+                    startActivity(intent);
+                }
+            });
         }
         public void bindChatContent(ChatLog chatLog){
             mMyText.setText(chatLog.getContent());
-            Glide.with(ChatFragment.this).load(mFriendImageUrl).into(mMyImage);
+            loadImage(MY_ID ,mMyImage);
         }
 
     }
@@ -188,11 +240,22 @@ public class ChatFragment extends Fragment {
             super(itemView);
             mFriendText = (TextView) itemView.findViewById(R.id.friend_text);
             mFriendImage = (ImageView) itemView.findViewById(R.id.chat_content_friend_image);
+            mFriendImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = MomentsActivity.newIntent(mFriendId , getActivity());
+                    startActivity(intent);
+                }
+            });
         }
         public void bindChatContent(ChatLog chatLog){
             mFriendText.setText(chatLog.getContent());
-            Glide.with(ChatFragment.this).load(mFriendImageUrl).into(mFriendImage);
+            loadImage(mFriendId , mFriendImage);
         }
+    }
+
+    private void loadImage(String id , ImageView imageView){
+        ChatGlideUtil.loadImageByUrl(ChatFragment.this , mFriendImageUrl+id+".jpg" , imageView , R.drawable.normal_person_image);
     }
 
     private class ChatAdapter extends RecyclerView.Adapter{
@@ -254,9 +317,9 @@ public class ChatFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mFragmentState = ON_RESUME;
-        if(mChatContent != null && mChatContent.getAdapter() != null){
-            mExecutorService.execute(getContentRunnable());
-        }
+//        if(mChatContent != null && mChatContent.getAdapter() != null){
+//            mExecutorService.execute(getContentRunnable());
+//        }
     }
 
     @Override

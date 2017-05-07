@@ -39,7 +39,7 @@
             android:layout_height="0dp"
             android:layout_weight="4" />
         <TextView
-            android:id="@+id/chat_introduce"
+            android:id="@+id/chat_last_content"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="3"

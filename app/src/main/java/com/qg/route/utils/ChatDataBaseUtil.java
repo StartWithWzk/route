@@ -60,7 +60,7 @@ public class ChatDataBaseUtil {
             chatLog.setSendId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ChatDataBaseHelper.FROM))));
             chatLog.setReceiveId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ChatDataBaseHelper.TO))));
             chatLog.setContent(cursor.getString(cursor.getColumnIndex(ChatDataBaseHelper.CONTENT)));
-            chatLog.setSendTime(cursor.getString(cursor.getColumnIndex(ChatDataBaseHelper.DATE)));
+            chatLog.setSendTime(Long.parseLong(cursor.getString(cursor.getColumnIndex(ChatDataBaseHelper.DATE))));
             logs.add(chatLog);
         }
         return logs;

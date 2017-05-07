@@ -4,16 +4,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardUseCompatPadding="true"
         app:cardElevation="1dp"
-        app:contentPadding="10dp"
-        android:layout_margin="20dp"
-        >
-
+        android:layout_margin="20dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,15 +26,16 @@
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="2"/>
-                <TextView
-                    android:id="@+id/sex_data"
+                <EditText
+                    android:id="@+id/sex_data_edit"
+                    android:theme="@style/LoginEditText"
                     android:textSize="15dp"
+                    android:hint="@string/update_tips_sex"
                     android:paddingTop="10dp"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="5"/>
             </LinearLayout>
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -52,9 +49,11 @@
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="2"/>
-                <TextView
-                    android:id="@+id/name_data"
+                <EditText
+                    android:id="@+id/name_data_edit"
+                    android:theme="@style/LoginEditText"
                     android:textSize="15dp"
+                    android:hint="@string/update_tips_name"
                     android:paddingTop="10dp"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
@@ -73,9 +72,11 @@
                     android:layout_height="40dp"
                     android:layout_weight="2"
                     android:layout_gravity="center"/>
-                <TextView
-                    android:id="@+id/introduce_data"
+                <EditText
+                    android:id="@+id/introduce_data_edit"
+                    android:theme="@style/LoginEditText"
                     android:textSize="15dp"
+                    android:hint="@string/update_tips_introduction"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:layout_width="0dp"
@@ -85,4 +86,13 @@
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
+    <Button
+        android:id="@+id/finish_update_button"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_margin="50dp"
+        android:background="@color/login_button"
+        android:textSize="20dp"
+        android:text="@string/finish_update"
+        android:textColor="@color/white"/>
 </LinearLayout>

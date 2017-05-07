@@ -1,6 +1,7 @@
 package com.qg.route.utils;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -172,7 +173,9 @@ public class HttpUtil {
      * @param url
      */
     private static Request buildWebSocketRequest(String url){
-        return new Request.Builder().url(url).build();
+        Request.Builder builder = new Request.Builder();
+        addSession(builder);
+        return builder.url(url).build();
     }
 
 
@@ -200,19 +203,26 @@ public class HttpUtil {
     }
 
     /**
-     * 创建提交图片的RequestBody
+     * 创建提交图片和文字的RequestBody
      * @param list
-     * @param picKey
+     * @param picKeys
+     * @param message
+     * @param textKey
      */
-    private static RequestBody buildRequestBody(@NonNull List<File> list, String picKey){
-        MultipartBody.Builder multipartBodyBuilder = null;
-
-        for(File file : list){
-            multipartBodyBuilder.addFormDataPart(picKey , file.getName() , RequestBody.create(MEDIA_TYPE_PNG , file));
+    private static RequestBody buildRequestBody(List<File> list, List<String> picKeys, String message , String textKey){
+        MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder();
+        if(list != null) {
+            for (int i = 0 ; i < list.size() ; i++) {
+                multipartBodyBuilder.addFormDataPart(picKeys.get(i), list.get(i).getName(), RequestBody.create(MEDIA_TYPE_PNG, list.get(i)));
+            }
+        }
+        if(message != null){
+            multipartBodyBuilder.addFormDataPart(textKey , message);
         }
 
         return multipartBodyBuilder.build();
     }
+
 
     /**
      * 处理同步请求返回的response
@@ -305,16 +315,18 @@ public class HttpUtil {
     }
 
     /**
-     * 使用同Post方法上传png图片（可单张也可以多张）
+     * 使用同Post方法上传png图片（可单张也可以多张）和文字
      * @param url
      * @param list
-     * @param pic_key
+     * @param pic_keys
+     * @param message
+     * @param textKey
      * @param connectCallback
      * @param isSyn
      * @return
      */
-    public static void PostPic(String url , List<File> list , String pic_key , HttpConnectCallback connectCallback , Boolean isSyn){
-        RequestBody requestBody = buildRequestBody(list , pic_key);
+    public static void PostPicAndText(String url , List<File> list , List<String> pic_keys , String message , String textKey ,HttpConnectCallback connectCallback , Boolean isSyn){
+        RequestBody requestBody = buildRequestBody(list , pic_keys , message , textKey);
         Request request = buildRequest(url , requestBody);
         analyseResponse(request , connectCallback , isSyn);
     }
@@ -328,6 +340,7 @@ public class HttpUtil {
         OK_HTTP_CLIENT.newWebSocket(request, new WebSocketListener() {
             @Override
             public void onOpen(WebSocket webSocket, Response response) {
+                Log.e("OPEN","open");
                 super.onOpen(webSocket, response);
                 sWebSocket = webSocket;
             }
@@ -359,5 +372,12 @@ public class HttpUtil {
         if(sWebSocket != null){
             sWebSocket.send(text);
         }
+    }
+
+    /**
+     * 关闭webSocket
+     */
+    public static void closeWebSocket(){
+        sWebSocket.close(1 , "CLOSE");
     }
 }
