@@ -68,6 +68,14 @@ public class User {
         this.introduction = introduction;
     }
 
+    public String getSuitability() {
+        return suitability;
+    }
+
+    public void setSuitability(String suitability) {
+        this.suitability = suitability;
+    }
+
     // toString
     @Override
     public String toString() {

@@ -3,18 +3,21 @@ package com.qg.route.main;
 import android.Manifest;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.qg.route.BaseActivity;
 import com.qg.route.R;
 import com.qg.route.bean.RequestResult;
+import com.qg.route.recommend.RecommendActivity;
 import com.qg.route.route.RouteFragment;
 import com.qg.route.utils.Constant;
 import com.qg.route.utils.HttpUtil;
@@ -28,7 +31,9 @@ import okhttp3.Headers;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class MainActivity extends BaseActivity {
+import static java.lang.System.exit;
+
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     public static final String TAG = "MainActivity";
     private static final int REQUEST_PERMISSION = 0;
 
@@ -158,12 +163,34 @@ public class MainActivity extends BaseActivity {
     private void setUpNavigation() {
         mNView = (NavigationView) findViewById(R.id.navigation_view);
         mNView.setItemIconTintList(null);
+        mNView.setNavigationItemSelectedListener(this);
     }
-
 
     @Override
     protected void onResume() {
         super.onResume();
         requestPermission(REQUEST_PERMISSION, PERMISSION_LIST);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        mDrawer.closeDrawers();
+        switch (item.getItemId()) {
+            case R.id.menu_address:
+                return true;
+            case R.id.menu_friend_recommend:
+                RecommendActivity.actionStart(this);
+                return true;
+            case R.id.menu_order:
+                return true;
+            case R.id.menu_setting:
+                return true;
+            case R.id.menu_exit:
+                exit(0);
+                return true;
+            default:
+                break;
+        }
+        return false;
     }
 }

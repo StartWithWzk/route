@@ -48,31 +48,12 @@
         </activity>
         <activity android:name=".routemap.RouteActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".contacts.ContactsActivity">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN" />-->
-
-            <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
+        <activity android:name=".contacts.ContactsActivity" />
         <activity android:name=".BaseActivity" />
-        <activity android:name=".routemap.SettingRouteActivity" >
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
-        <activity android:name=".route.GroupDetailActivity" >
-
-        </activity>
-        <activity android:name=".moments.MomentsActivity">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN" />-->
-
-            <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
+        <activity android:name=".routemap.SettingRouteActivity" />
+        <activity android:name=".route.GroupDetailActivity" />
+        <activity android:name=".moments.MomentsActivity" />
+        <activity android:name=".recommend.RecommendActivity" />
 
         <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
         <service android:name="com.amap.api.location.APSService" >

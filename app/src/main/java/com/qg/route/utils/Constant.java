@@ -9,9 +9,9 @@ public class Constant {
     public static String PASSWORD = "123456";
     // base url
     // 远程URL
-//    public static final String BASE_URL = "http://118.89.54.17:8080/onway";
+    public static final String BASE_URL = "http://118.89.54.17:8080/onway";
     // 本地URL
-    public static final String BASE_URL = "http://4ze9d6.natappfree.cc:80/onway";
+//    public static final String BASE_URL = "http://4ze9d6.natappfree.cc:80/onway";
 
     // Default Location:广工图书馆
     public static final String GDUT_LONGITUDE = "113.395639";
@@ -61,5 +61,9 @@ public class Constant {
         public static final String GROUP_INFOMATION = BASE_URL + "/route/";
     }
 
+    // 获得头像
+    public static final String RECOMMEND_FRIEND = BASE_URL + "/recommend";
+
+    // 头像
     public static final String PICTURE = BASE_URL + "/picture/";
 }
