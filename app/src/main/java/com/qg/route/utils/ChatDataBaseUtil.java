@@ -37,13 +37,15 @@ public class ChatDataBaseUtil {
     }
 
     private static String getWhich(String[] which){
-        String sql = "";
-        int k = 0 ;
-        for(;k < which.length - 1 ; k++){
-            sql += which[k] + " = ?" + " and ";
-        }
-        sql += which[k] + " = ?";
-        return sql;
+        if(which!=null) {
+            String sql = "";
+            int k = 0;
+            for (; k < which.length - 1; k++) {
+                sql += which[k] + " = ?" + " and ";
+            }
+            sql += which[k] + " = ?";
+            return sql;
+        }else return null;
     }
 
     public static void updata(Context context , Map<String , String> map , String[] which , String[] values){

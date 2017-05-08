@@ -30,4 +30,8 @@
         <item name="android:colorControlActivated">@color/white</item>
     </style>
 
+    <style name="ChatToolbar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+    </style>
 </resources>

@@ -35,9 +35,12 @@ import com.google.gson.reflect.TypeToken;
 import com.qg.route.R;
 import com.qg.route.bean.RequestResult;
 import com.qg.route.bean.User;
+import com.qg.route.chat.ChatBean;
 import com.qg.route.login.LoginActivity;
 import com.qg.route.utils.ChatDataBaseUtil;
 import com.qg.route.utils.Constant;
+import com.qg.route.utils.FriendDataBaseHelper;
+import com.qg.route.utils.FriendDataBaseUtil;
 import com.qg.route.utils.HttpUtil;
 
 import java.io.File;
@@ -199,8 +202,15 @@ public class MomentsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         if(!mId.equals(mMyId))
             getMenuInflater().inflate(R.menu.friend_operation , menu);
-        else
-            getMenuInflater().inflate(R.menu.moment_and_data , menu);
+        else{
+            List< ChatBean> list = FriendDataBaseUtil.query(this , new String[]{FriendDataBaseHelper.USER_ID} , new String[]{mId} , null);
+            if(list != null && list.size() > 0){
+                getMenuInflater().inflate(R.menu.friend_operation , menu);
+            }else {
+                getMenuInflater().inflate(R.menu.stranger , menu);
+            }
+        }
+
         return true;
     }
 
@@ -233,6 +243,8 @@ public class MomentsActivity extends AppCompatActivity {
                 intent = new Intent(this , UpdateDataActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.add_friend :
+                
         }
         return super.onOptionsItemSelected(item);
     }

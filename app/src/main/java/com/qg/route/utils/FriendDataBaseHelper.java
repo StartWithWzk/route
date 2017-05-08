@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class FriendDataBaseHelper extends SQLiteOpenHelper {
 
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "chat_content_db";
+    public static final String DATABASE_NAME = "friend_list_db";
     public static final String TABLE_NAME = "friend_list_tb";
     public static final String NAME = "_name";
     public static final String LAST_CONTENT = "_last_content";

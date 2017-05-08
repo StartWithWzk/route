@@ -43,6 +43,14 @@ public class HttpUtil {
 
 
     /**
+     * 获取session
+     */
+    public static String getSession(){
+        return  sSession;
+    }
+
+
+    /**
      * 设置缓存目录
      * @param dir
      * @return

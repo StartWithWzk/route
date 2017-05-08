@@ -23,14 +23,14 @@ public class ContactsActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private final static String TAB_FRIEND = "好友";
     private final static String TAB_FRIENDS = "圈子";
-
+    private final static String TITLE = "通讯录";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
         mTabLayout = (TabLayout) findViewById(R.id.contacts_tab_layout);
         mViewPager = (ViewPager) findViewById(R.id.contacts_view_pager);
-
+        setTitle(TITLE);
         intiUI();
     }
 

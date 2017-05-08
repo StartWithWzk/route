@@ -66,19 +66,22 @@ public class ChatFragment extends Fragment {
     private Button mSendButton;
     private String mFriendName;
     private String mFriendId;
+    private Boolean isCircle;
     private String mFragmentState;
     private ChatReceiver mChatReceiver = new ChatReceiver();
     private ExecutorService mExecutorService= Executors.newSingleThreadExecutor();;
 
     public static final String USER_NAME = "com.qg.route.chatfragment.USER_NAME";
     public static final String USER_ID = "com.qg.route.chatfragment.USER_ID";
+    public static final String IS_CIRCLE = "com.qg.route.chatfragment.CIRCLE";
     private static final String ON_PAUSE = "onPause";
     private static final String ON_RESUME = "onResume";
 
-    public static ChatFragment newInstance(String name , String id){
+    public static ChatFragment newInstance(String name , String id , Boolean isCircle){
         Bundle bundle = new Bundle();
         bundle.putString(USER_ID , id);
         bundle.putString(USER_NAME , name);
+        bundle.putBoolean(IS_CIRCLE , isCircle);
         ChatFragment fragment = new ChatFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -130,6 +133,9 @@ public class ChatFragment extends Fragment {
         mSendContent = (EditText) view.findViewById(R.id.send_edit_text);
         mSendButton = (Button) view.findViewById(R.id.send_button);
         mContents = new ArrayList<>();
+        mFriendId = getArguments().getString(USER_ID);
+        mFriendName = getArguments().getString(USER_NAME);
+        isCircle = getArguments().getBoolean(IS_CIRCLE);
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,19 +143,24 @@ public class ChatFragment extends Fragment {
                 chatLog.setSendId(Integer.parseInt(MY_ID));
                 chatLog.setReceiveId(Integer.parseInt(mFriendId));
                 chatLog.setContent(mSendContent.getText().toString());
-                chatLog.setFlag(0);
+                if(!isCircle)chatLog.setFlag(0);
+                else chatLog.setFlag(3);
                 String json = new Gson().toJson(chatLog , ChatLog.class);
                 Log.e("JSON",json);
-                Map<String , String> map = newMessage(chatLog);
-                ChatDataBaseUtil.insert(getActivity() , map);
+                //如果不是圈子信息
+                //存到数据库
+
+                Map<String, String> map = newMessage(chatLog);
+                ChatDataBaseUtil.insert(getActivity(), map);
                 HttpUtil.sendMessage(json);
 
-                //存到数据库
-                Map<String , String> map1 = new HashMap<String, String>();
-                map1.put(FriendDataBaseHelper.USER_ID , mFriendId);
-                map1.put(FriendDataBaseHelper.LAST_CONTENT , chatLog.getContent());
-                map1.put(FriendDataBaseHelper.LAST_TIME , chatLog.getSendTime()+"");
-                FriendDataBaseUtil.repleace(getActivity() , map1);
+
+                Map<String, String> map1 = new HashMap<String, String>();
+                map1.put(FriendDataBaseHelper.NAME , mFriendName);
+                map1.put(FriendDataBaseHelper.USER_ID, mFriendId);
+                map1.put(FriendDataBaseHelper.LAST_CONTENT, chatLog.getContent());
+                map1.put(FriendDataBaseHelper.LAST_TIME, chatLog.getSendTime() + "");
+                FriendDataBaseUtil.replace(getActivity(), map1);
 
                 mContents.add(chatLog);
                 mChatAdapter.notifyDataSetChanged();
@@ -157,8 +168,6 @@ public class ChatFragment extends Fragment {
                 mChatContent.smoothScrollToPosition(mChatAdapter.getItemCount()-1);
             }
         });
-        mFriendId = getArguments().getString(USER_ID);
-        mFriendName = getArguments().getString(USER_NAME);
 
 
         mChatAdapter = new ChatAdapter();
@@ -176,9 +185,10 @@ public class ChatFragment extends Fragment {
             @Override
             public void run() {
                 List<ChatLog> list = ChatDataBaseUtil.query(getActivity() , new String[]{
-                    ChatDataBaseHelper.FROM} ,new String[]{MY_ID},null );
+                    ChatDataBaseHelper.FROM , ChatDataBaseHelper.TO} ,new String[]{MY_ID , mFriendId},null );
                 if(list != null && list.size()>0) {
-                    list.addAll(ChatDataBaseUtil.query(getActivity(), new String[]{ChatDataBaseHelper.TO}, new String[]{MY_ID}, null));
+                    list.addAll(ChatDataBaseUtil.query(getActivity(),
+                            new String[]{ChatDataBaseHelper.TO , ChatDataBaseHelper.FROM}, new String[]{MY_ID , mFriendId}, null));
 
                     Collections.sort(list, new Comparator<ChatLog>() {
                         @Override
@@ -250,7 +260,7 @@ public class ChatFragment extends Fragment {
         }
         public void bindChatContent(ChatLog chatLog){
             mFriendText.setText(chatLog.getContent());
-            loadImage(mFriendId , mFriendImage);
+            loadImage(chatLog.getSendId()+"" , mFriendImage);
         }
     }
 

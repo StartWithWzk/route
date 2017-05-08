@@ -16,6 +16,10 @@ public class ChatRoom {
     private int roomCount;      //房间人数
     private String destination; //终点名
     private int type;           //类型
+    private double x;
+    private double y;
+    private long createTime;
+    private String description;
 
     public ChatRoom(int id, int routeId, String roomName, double x, double y, String destination, int type){
         this.id = id;

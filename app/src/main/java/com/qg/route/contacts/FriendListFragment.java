@@ -129,7 +129,7 @@ public class FriendListFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            Intent intent = ChatActivity.newIntent(getActivity() ,mFriend.getName() , mFriend.getUserid()+"");
+            Intent intent = ChatActivity.newIntent(getActivity() ,mFriend.getName() , mFriend.getUserid()+"" , false);
             startActivity(intent);
         }
     }

@@ -17,11 +17,11 @@ public class Information {
     private int flag;           //记录标志
                                 // 0为还未任何处理，1同意好友申请，
                                 // 2忽略好友申请，3拒绝好友申请
-    private Date sendTime;      //发送时间
+    private long sendTime;      //发送时间
     private int deleFlag;       //删除标志，初始化为0，发送者删除为1，接收者删除为2
 
     public Information(){
-        this.sendTime = CommonDate.getNowDate();
+        this.sendTime = CommonDate.getNowDate().getTime();
     }
 
     public Information(int sendId, int receiveId, int flag){
@@ -80,11 +80,11 @@ public class Information {
         this.flag = flag;
     }
 
-    public Date getSendTime() {
+    public long getSendTime() {
         return sendTime;
     }
 
-    public void setSendTime(Date sendTime) {
+    public void setSendTime(long sendTime) {
         this.sendTime = sendTime;
     }
 

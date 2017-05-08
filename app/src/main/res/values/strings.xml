@@ -28,4 +28,7 @@
     <string name="update_tips_sex">填男或女(必填)</string>
     <string name="update_tips_name">请输入姓名</string>
     <string name="update_tips_introduction">介绍一下自己吧</string>
+    <string name="information_accept">接受</string>
+    <string name="information_reject">拒绝</string>
+    <string name="add_friend">添加好友</string>
 </resources>
