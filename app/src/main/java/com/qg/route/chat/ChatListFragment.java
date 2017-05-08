@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.qg.route.R;
 import com.qg.route.bean.ChatLog;
 import com.qg.route.login.LoginActivity;
+import com.qg.route.moments.ChatGlideUtil;
 import com.qg.route.utils.ChatDataBaseHelper;
 import com.qg.route.utils.ChatDataBaseUtil;
 import com.qg.route.utils.Constant;
@@ -25,7 +26,9 @@ import com.qg.route.utils.FriendDataBaseUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -36,21 +39,23 @@ import java.util.concurrent.Executors;
 
 public class ChatListFragment extends Fragment {
 
-    private final static String MY_ID = LoginActivity.sMyId;
+    private final static String MY_ID = Constant.USER_ID;
     private Handler mHandler = new Handler();
     private List<ChatBean> mFriends;
     private RecyclerView mChatList = null;
     private String mFriendImageUrl = Constant.ChatUrl.CHAT_HEAD_IMAGE_GET;
     private ChatAdapter mChatAdapter = null;
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    private Runnable getNewsCountRunnable(final ChatHolder chatHolder){
+    private Runnable getNewsCountRunnable(final ChatHolder chatHolder, final ChatBean user){
         return new Runnable() {
             @Override
             public void run() {
                 int count = 0;
-                List<ChatLog> list = ChatDataBaseUtil.query(getActivity() , new String[]{ChatDataBaseHelper.FROM , ChatDataBaseHelper.IS_NEW} , new String[]{MY_ID, "1"} , null);
-                count += list.size();
-                list = ChatDataBaseUtil.query(getActivity() , new String[]{ChatDataBaseHelper.TO , ChatDataBaseHelper.IS_NEW} , new String[]{MY_ID, "1"} , null);
+                List<ChatLog> list = ChatDataBaseUtil.query(getActivity() , new String[]{ChatDataBaseHelper.FROM ,
+                        ChatDataBaseHelper.TO , ChatDataBaseHelper.IS_NEW} , new String[]{user.getUser_id() , MY_ID, "1"} , null);
+                Map<String , String> map = new HashMap<>();
+                map.put(ChatDataBaseHelper.IS_NEW , "0");
                 count += list.size();
                 final int finalCount = count;
                 mHandler.post(new Runnable() {
@@ -74,7 +79,6 @@ public class ChatListFragment extends Fragment {
         mFriends = new ArrayList<ChatBean>();
         mChatAdapter = new ChatAdapter();
         mChatList.setAdapter(mChatAdapter);
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(getFriendListRunnable());
         return view;
     }
@@ -90,15 +94,21 @@ public class ChatListFragment extends Fragment {
                     public int compare(ChatBean chatBean, ChatBean t1) {
                         int result = 0;
                         if(Long.parseLong(chatBean.getLast_time()) > Long.parseLong(t1.getLast_time())){
-                            result =  1;
+                            result =  -1;
                         }else if(Long.parseLong(chatBean.getLast_time()) == Long.parseLong(t1.getLast_time())){
                             result =  0;
                         }else{
-                            result =  -1;
+                            result =  1;
                         }
                         return  result;
                     }
                 });
+                if(mFriends!=null && mFriends.size()>0) {
+                    for (int i = 0 ; i < mFriends.size() ; i++) {
+                        if (mFriends.get(i).getUser_id().equals("0"))
+                            mFriends.remove(mFriends.get(i));
+                    }
+                }
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -130,8 +140,7 @@ public class ChatListFragment extends Fragment {
             mFriend = friend;
             mLastContent.setText(friend.getLast_content());
             mChatTitle.setText(friend.getName());
-            Glide.with(ChatListFragment.this).load(mFriendImageUrl+friend.getUser_id()+".jpg")
-            .into(mChatImage);
+            ChatGlideUtil.loadImageByUrl(ChatListFragment.this , mFriendImageUrl+friend.getUser_id()+".jpg" , mChatImage , R.drawable.normal_person_image);
         }
         public void bindNewsCount(int count){
             if(count > 0)
@@ -161,8 +170,8 @@ public class ChatListFragment extends Fragment {
         public void onBindViewHolder(ChatHolder holder, int position) {
             ChatBean user = mFriends.get(position);
             holder.bindChatList(user);
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
-            executorService.execute(getNewsCountRunnable(holder));
+
+            executorService.execute(getNewsCountRunnable(holder , user));
         }
 
 

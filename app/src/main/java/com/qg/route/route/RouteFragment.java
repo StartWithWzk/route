@@ -36,6 +36,7 @@ import com.qg.route.bean.RequestResult;
 import com.qg.route.bean.Route;
 import com.qg.route.bean.Trace;
 import com.qg.route.bean.User;
+import com.qg.route.chat.ChatActivity;
 import com.qg.route.main.MainActivity;
 import com.qg.route.routemap.RouteActivity;
 import com.qg.route.utils.Constant;
@@ -450,6 +451,11 @@ public class RouteFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private void toChatActivity(ChatRoom chatRoom){
+        Intent intent = ChatActivity.newIntent(getActivity(),chatRoom.getRoomName(),chatRoom.getId()+"",true);
+        startActivity(intent);
+    }
+
     /**
      * 加入圈子点击
      * @param v
@@ -480,7 +486,7 @@ public class RouteFragment extends Fragment implements View.OnClickListener {
                                     for (ChatRoom chatRoom : mChatRoomList
                                          ) {
                                         if (chatRoom.getId() == mChatRoom.getId()) { // 说明我曾经加入过此圈子
-                                            // TODO: 2017/5/6 此处直接圈子即可
+                                            toChatActivity(chatRoom);
                                             return;
                                         }
                                     }
@@ -493,7 +499,7 @@ public class RouteFragment extends Fragment implements View.OnClickListener {
                                                 RequestResult requestresult = JsonUtil.toObject(body.charStream(), RequestResult.class);
                                                 if (requestresult.getState() == 174) {
                                                     Log.d(TAG, "onSuccess: " + requestresult.getStateInfo());
-                                                    // TODO: 2017/5/6 此处跳转圈子
+                                                    toChatActivity(mChatRoom);
                                                 }
                                             }
                                         }
@@ -534,7 +540,7 @@ public class RouteFragment extends Fragment implements View.OnClickListener {
                                 RequestResult requestResult = JsonUtil.toObject(body.charStream(), RequestResult.class);
                                 if (requestResult.getState() == 172) {
                                     int groupId = JsonUtil.toObject(requestResult.getData().toString(), Integer.class);
-                                    // TODO: 2017/5/6 此处创建圈子，并且跳转至相应页面
+                                    toChatActivity(mChatRoom);
                                 }
                             }
                         }

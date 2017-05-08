@@ -38,13 +38,15 @@ public class FriendDataBaseUtil {
     }
 
     private static String getWhich(String[] which){
-        String sql = "";
-        int k = 0 ;
-        for(;k < which.length - 1 ; k++){
-            sql += which[k] + " = ?" + " and ";
-        }
-        sql += which[k] + " = ?";
-        return sql;
+        if(which != null) {
+            String sql = "";
+            int k = 0;
+            for (; k < which.length - 1; k++) {
+                sql += which[k] + " = ?" + " and ";
+            }
+            sql += which[k] + " = ?";
+            return sql;
+        }else return null;
     }
 
     public static void updata(Context context , Map<String , String> map , String[] which , String[] values){
@@ -52,7 +54,7 @@ public class FriendDataBaseUtil {
         sSQLiteDatabase.update(FriendDataBaseHelper.TABLE_NAME , getContentValues(map) , getWhich(which) , values);
     }
 
-    public static void repleace(Context context , Map<String , String> map){
+    public static void replace(Context context , Map<String , String> map){
         sSQLiteDatabase = FriendDataBaseHelper.getDataBaseInstance(context).getWritableDatabase();
         sSQLiteDatabase.replace(FriendDataBaseHelper.TABLE_NAME , null , getContentValues(map));
     }

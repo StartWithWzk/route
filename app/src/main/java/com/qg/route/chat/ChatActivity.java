@@ -11,10 +11,11 @@ import android.util.Log;
 
 public class ChatActivity extends SingleFragmentActivity{
 
-    public static Intent newIntent(Context context , String name , String id){
+    public static Intent newIntent(Context context , String name , String id , Boolean isCircle){
         Intent intent = new Intent(context , ChatActivity.class);
         intent.putExtra(ChatFragment.USER_NAME , name);
         intent.putExtra(ChatFragment.USER_ID , id);
+        intent.putExtra(ChatFragment.IS_CIRCLE , isCircle);
         return intent;
     }
 
@@ -22,10 +23,12 @@ public class ChatActivity extends SingleFragmentActivity{
     protected Fragment createFragment() {
         String name = null;
         String id = null;
+        Boolean isCircle = null;
         Intent i = getIntent();
         name = i.getStringExtra(ChatFragment.USER_NAME);
         id = i.getStringExtra(ChatFragment.USER_ID);
+        isCircle= i.getBooleanExtra(ChatFragment.IS_CIRCLE , false);
         getSupportActionBar().setTitle(name);
-        return ChatFragment.newInstance(name , id);
+        return ChatFragment.newInstance(name , id , isCircle);
     }
 }

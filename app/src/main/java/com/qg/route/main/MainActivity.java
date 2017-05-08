@@ -18,7 +18,9 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.qg.route.BaseActivity;
 import com.qg.route.R;
 import com.qg.route.bean.RequestResult;
+import com.qg.route.chat.ChatListFragment;
 import com.qg.route.chat.ChatService;
+import com.qg.route.contacts.ContactsActivity;
 import com.qg.route.contacts.FriendListFragment;
 import com.qg.route.moments.MomentsFragment;
 import com.qg.route.recommend.RecommendActivity;
@@ -133,7 +135,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
         mPagerAdapter.addFragment("路线", new RouteFragment());
         mPagerAdapter.addFragment("动态", MomentsFragment.newInstance(Constant.USER_ID));
-        mPagerAdapter.addFragment("聊聊", new FriendListFragment());
+        mPagerAdapter.addFragment("聊聊", new ChatListFragment());
         mViewpager.setAdapter(mPagerAdapter);
 
         // viewpager tabs
@@ -180,9 +182,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // TODO: 2017/5/7 此处是侧滑栏
         mDrawer.closeDrawers();
         switch (item.getItemId()) {
             case R.id.menu_address:
+                Intent intent = new Intent(this , ContactsActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.menu_friend_recommend:
                 RecommendActivity.actionStart(this);

@@ -31,6 +31,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -113,6 +115,20 @@ public class MomentsFragment extends Fragment {
                         for (JsonElement element : jsonElements) {
                             mTrendList.add(gson.fromJson(element, Trends.class));
                         }
+                        Collections.sort(mTrendList, new Comparator<Trends>() {
+                            @Override
+                            public int compare(Trends trends, Trends t1) {
+                                int result = 0;
+                                if (trends.getSendTime() > t1.getSendTime()) {
+                                    result = -1;
+                                } else if (trends.getSendTime() == (t1.getSendTime())) {
+                                    result = 0;
+                                } else {
+                                    result = 1;
+                                }
+                                return result;
+                            }
+                        });
                         mHandle.post(new Runnable() {
                             @Override
                             public void run() {
@@ -234,6 +250,7 @@ public class MomentsFragment extends Fragment {
                                 public void run() {
                                     mTrendList.remove(position);
                                     mAdapter.notifyItemRemoved(position);
+                                    mAdapter.notifyDataSetChanged();
                                 }
                             });
                         }

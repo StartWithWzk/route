@@ -69,6 +69,8 @@ public class Constant {
         public static final String WEB_SOCKET = "ws://118.89.54.17:8080/onway/websocket";
 
         public static final String FRIEND_LIST_GET = BASE_URL + "/relation/list";
+        public static final String ROOM_LIST_GET = BASE_URL + "/allroom";
+        public static final String OFFLINE_MESSAGE_URL = BASE_URL + "/chat/list";
     }
 
     // 动态
@@ -82,6 +84,12 @@ public class Constant {
         public static final String MOMENT_GET  = BASE_URL + "/trends/personal/";
         public static final String MOMENT_PUBLISH = BASE_URL + "/trends/send";
         public static final String UPDATE_DATA = BASE_URL + "/user/info/update";
+    }
+
+    //information
+    public static final class InformationUrl{
+        public static final String INFORMATION_GET = BASE_URL + "/info/list/";
+        public static final String HANDLE_INFORMATION = BASE_URL + "/info/handle/";
     }
 
     // 获得头像
