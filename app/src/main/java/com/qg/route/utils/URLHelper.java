@@ -25,6 +25,10 @@ public class URLHelper {
         return Constant.PICTURE + userId + ".jpg";
     }
 
+    public static String getPic(String userId) {
+        return Constant.PICTURE + userId + ".jpg";
+    }
+
     public static String getBusinessPic(int businessId) {
         return Constant.BUSINESS_PICTURE + businessId + ".jpg";
     }

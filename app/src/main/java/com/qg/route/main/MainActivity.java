@@ -13,21 +13,25 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.bumptech.glide.Glide;
 import com.qg.route.BaseActivity;
 import com.qg.route.R;
 import com.qg.route.bean.RequestResult;
+import com.qg.route.bean.User;
 import com.qg.route.chat.ChatListFragment;
 import com.qg.route.chat.ChatService;
 import com.qg.route.contacts.ContactsActivity;
-import com.qg.route.contacts.FriendListFragment;
 import com.qg.route.moments.MomentsFragment;
 import com.qg.route.recommend.RecommendActivity;
 import com.qg.route.route.RouteFragment;
 import com.qg.route.utils.Constant;
 import com.qg.route.utils.HttpUtil;
 import com.qg.route.utils.JsonUtil;
+import com.qg.route.utils.SPUtil;
 import com.qg.route.utils.URLHelper;
 
 import java.io.IOException;
@@ -39,7 +43,7 @@ import okhttp3.ResponseBody;
 
 import static java.lang.System.exit;
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     public static final String TAG = "MainActivity";
     private static final int REQUEST_PERMISSION = 0;
 
@@ -55,6 +59,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private PagerSlidingTabStrip mTabs;
     private ViewPager mViewpager;
     private NavigationView mNView;
+    private ImageView userHead;
+    private TextView userName;
 
     // adapter
     private MainPagerAdapter mPagerAdapter;
@@ -68,9 +74,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         setUpToolbar();
         setUpDrawer();
-        setUpNavigation();
     }
 
+    // 暂时的登录措施
     private void login() {
         HttpUtil.PostMap(Constant.UserUrl.LOGIN, URLHelper.sendLogin(Constant.USER_ID, Constant.PASSWORD)
                 , new HttpUtil.HttpConnectCallback() {
@@ -94,10 +100,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         Intent intent = ChatService.newIntent(MainActivity.this);
                         startService(intent);
                     }
+                    User temp = JsonUtil.toObject(JsonUtil.toJson(requestResult.getData()), User.class);
+                    if (temp != null) {
+                        SPUtil.put(MainActivity.this, Constant.KEY_USER_ID, temp.getUserid());
+                        SPUtil.put(MainActivity.this, Constant.KEY_USER_NAME, temp.getName());
+                    }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             setUpViewPage();
+                            setUpNavigation();
                         }
                     });
                 } else {
@@ -172,6 +184,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mNView = (NavigationView) findViewById(R.id.navigation_view);
         mNView.setItemIconTintList(null);
         mNView.setNavigationItemSelectedListener(this);
+        View headView = mNView.getHeaderView(0);
+        userHead = (ImageView) headView.findViewById(R.id.iv_user_head);
+        userHead.setOnClickListener(this);
+        userName = (TextView) headView.findViewById(R.id.tv_user_name);
+        // 设置名字以及头像
+        Glide.with(this).load(URLHelper.getPic((int) SPUtil.get(this, Constant.KEY_USER_ID, -1)))
+                .error(R.mipmap.head_default)
+                .into(userHead);
+        userName.setText((CharSequence) SPUtil.get(this, Constant.KEY_USER_NAME, "zhikang_wen"));
     }
 
     @Override
@@ -205,5 +226,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
         }
         return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        // TODO: 2017/5/8 此处进行跳转个人信息页面 
     }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="font_normal">16sp</dimen>
+    <dimen name="font_middle">18sp</dimen>
     <dimen name="font_big">20sp</dimen>
     <dimen name="action_bar_height">56dp</dimen>
 </resources>

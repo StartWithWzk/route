@@ -10,7 +10,6 @@ import java.util.Date;
 public class User {
 
     private int userid;            //userid
-    private String password;        //密码
     private String name;            //姓名
     private int sex;                //性别
     private long createDate;        //创建时间
@@ -26,14 +25,6 @@ public class User {
 
     public void setUserid(int userid) {
         this.userid = userid;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getName() {
@@ -76,16 +67,4 @@ public class User {
         this.suitability = suitability;
     }
 
-    // toString
-    @Override
-    public String toString() {
-        return "User{" +
-                "userid='" + userid + '\'' +
-                ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
-                ", sex=" + sex +
-                ", createDate=" + createDate +
-                ", introduction='" + introduction + '\'' +
-                '}';
-    }
 }
