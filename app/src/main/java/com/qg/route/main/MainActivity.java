@@ -187,6 +187,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.menu_friend_recommend:
                 RecommendActivity.actionStart(this);
                 return true;
+            case R.id.menu_notification:
+                return true;
             case R.id.menu_order:
                 return true;
             case R.id.menu_setting:

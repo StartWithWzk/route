@@ -12,6 +12,11 @@
         android:title="推荐好友" />
 
     <item
+        android:id="@+id/menu_notification"
+        android:icon="@mipmap/notification"
+        android:title="通知" />
+
+    <item
         android:id="@+id/menu_order"
         android:icon="@mipmap/order"
         android:title="订单" />
