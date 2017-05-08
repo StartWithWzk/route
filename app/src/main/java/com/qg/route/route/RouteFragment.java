@@ -105,7 +105,6 @@ public class RouteFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_route, container, false);
-        setHasOptionsMenu(true);
 
         viewStubCompat = (ViewStubCompat) view.findViewById(R.id.empty_view);
         mEmptyView = (RelativeLayout) view.findViewById(R.id.rl_empty_view);
@@ -395,12 +394,6 @@ public class RouteFragment extends Fragment implements View.OnClickListener {
             default:
                 break;
         }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_route, menu);
     }
 
     @Override
