@@ -5,9 +5,11 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.qg.route.R;
 import com.qg.route.bean.Route;
+import com.qg.route.custom.DrawRouteView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,13 +42,14 @@ public class RouteViewPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        container.addView(initView(mView.get(position)));
+        container.addView(initView(mView.get(position), position));
         return mView.get(position);
     }
 
     // 在此处初始化View
-    private View initView(View newView) {
-
+    private View initView(View newView, int position) {
+        LinearLayout linearLayout = (LinearLayout) newView.findViewById(R.id.ll_route);
+        linearLayout.addView(new DrawRouteView(mContext, mRoute.get(position)));
         return newView;
     }
 
