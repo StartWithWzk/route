@@ -93,6 +93,7 @@ public class RouteFragment extends Fragment implements View.OnClickListener {
 
     private int currentItem; // 当前路线
     private UserHeadAdapter mUserHeadAdapter;
+    private boolean isInflateEmptyView; // 是否显示了空页面
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -191,6 +192,7 @@ public class RouteFragment extends Fragment implements View.OnClickListener {
                                     setBusinessDetail();
                                 } else { // 无数据，显示空页面
                                     viewStubCompat.inflate();
+                                    isInflateEmptyView = true;
                                 }
                             }
                         });
@@ -409,6 +411,9 @@ public class RouteFragment extends Fragment implements View.OnClickListener {
                 Route route = trace.getRoute();
                 mPath.add(route);
                 Log.d(TAG, "onActivityResult: " + JsonUtil.toJson(route));
+                if (isInflateEmptyView) {
+                    // TODO: 2017/5/8 隐藏画面 
+                }
                 HttpUtil.PostMap(Constant.RouteUrl.ROUTE_SAVE, URLHelper.sendRoute(JsonUtil.toJson(route))
                         , new HttpUtil.HttpConnectCallback() {
                     @Override
