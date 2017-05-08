@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.qg.route.R;
 import com.qg.route.bean.Business;
+import com.qg.route.utils.Constant;
+import com.qg.route.utils.URLHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +39,10 @@ public class BusinessAdapter extends  RecyclerView.Adapter<BusinessAdapter.ViewH
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Business business = mBusiness.get(position);
-        Glide.with(context).load(R.mipmap.temp_picture).into(holder.businessPic);
+        Glide.with(context)
+                .load(URLHelper.getBusinessPic(business.getId()))
+                .error(R.mipmap.temp_picture)
+                .into(holder.businessPic);
         holder.businessName.setText(business.getBusiName());
         holder.businessRank.setText(String.valueOf(business.getBusiGrade()));
         holder.businessConsume.setText("人均消费" + String.valueOf(business.getConsumption()) + "元");

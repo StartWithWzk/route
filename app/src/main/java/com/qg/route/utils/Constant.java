@@ -97,4 +97,7 @@ public class Constant {
 
     // 头像
     public static final String PICTURE = BASE_URL + "/picture/";
+
+    // 商家
+    public static final String BUSINESS_PICTURE = BASE_URL + "/image/";
 }
