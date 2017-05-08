@@ -203,7 +203,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // TODO: 2017/5/7 此处是侧滑栏
         mDrawer.closeDrawers();
         switch (item.getItemId()) {
             case R.id.menu_address:
