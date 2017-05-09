@@ -675,7 +675,6 @@ public class RouteActivity extends BaseActivity implements AMap.OnMyLocationChan
         if (rCode == AMapException.CODE_AMAP_SUCCESS) {
             if (result != null && result.getRegeocodeAddress() != null
                     && result.getRegeocodeAddress().getFormatAddress() != null) {
-                // // TODO: 2017/5/5 修改地址 
                 mOirginName = result.getRegeocodeAddress().getPois().get(0).getTitle() + "附近";
 
             } else {

@@ -407,12 +407,12 @@ public class RouteFragment extends Fragment implements View.OnClickListener {
         if (requestCode == REQUEST_ROUTE) {
             Trace trace = data.getParcelableExtra(TRACE);
             if (trace != null) {
-                // TODO: 2017/4/30 还需要请求网络
                 Route route = trace.getRoute();
                 mPath.add(route);
                 Log.d(TAG, "onActivityResult: " + JsonUtil.toJson(route));
                 if (isInflateEmptyView) {
-                    // TODO: 2017/5/8 隐藏画面 
+                    // TODO: 2017/5/8 隐藏画面
+                    viewStubCompat.setVisibility(View.GONE);
                 }
                 HttpUtil.PostMap(Constant.RouteUrl.ROUTE_SAVE, URLHelper.sendRoute(JsonUtil.toJson(route))
                         , new HttpUtil.HttpConnectCallback() {
@@ -425,7 +425,7 @@ public class RouteFragment extends Fragment implements View.OnClickListener {
                                 int routeId = JsonUtil.toObject(requestResult.getData().toString(), Integer.class);
                                 mPath.get(mPath.size() - 1).setId(routeId);
                                 Log.d(TAG, "onSuccess: routeId" + routeId);
-                                // TODO: 2017/5/4 在此处更新圈子详情
+                                // 在此处更新圈子详情
                                 setGroupDetail(routeId);
                             }
                         }
@@ -529,7 +529,7 @@ public class RouteFragment extends Fragment implements View.OnClickListener {
                         }
                     }, false);
                 } else {
-                    // TODO: 2017/5/5 此处应该创建圈子
+                    // 此处应该创建圈子
                     HttpUtil.DoGet(Constant.GroupUrl.GROUP_CREATE + mPath.get(currentItem).getId(),
                             new HttpUtil.HttpConnectCallback() {
                         @Override
