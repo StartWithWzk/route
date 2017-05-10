@@ -27,11 +27,14 @@ import com.qg.route.chat.ChatListFragment;
 import com.qg.route.chat.ChatService;
 import com.qg.route.contacts.ContactsActivity;
 import com.qg.route.information.InformationActivity;
+import com.qg.route.moments.ChatGlideUtil;
 import com.qg.route.moments.MomentsActivity;
 import com.qg.route.moments.MomentsFragment;
 import com.qg.route.recommend.RecommendActivity;
 import com.qg.route.route.RouteFragment;
 import com.qg.route.utils.Constant;
+import com.qg.route.utils.FriendDataBaseHelper;
+import com.qg.route.utils.FriendDataBaseUtil;
 import com.qg.route.utils.HttpUtil;
 import com.qg.route.utils.JsonUtil;
 import com.qg.route.utils.SPUtil;
@@ -194,15 +197,21 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         userHead.setOnClickListener(this);
         userName = (TextView) headView.findViewById(R.id.tv_user_name);
         // 设置名字以及头像
-        Glide.with(this).load(URLHelper.getPic((int) SPUtil.get(this, Constant.KEY_USER_ID, -1)))
-                .error(R.mipmap.head_default)
-                .into(userHead);
+        //Glide.with(this).load(URLHelper.getPic((int) SPUtil.get(this, Constant.KEY_USER_ID, -1)))
+                //.error(R.mipmap.head_default)
+                //.into(userHead);
+        // TODO: 2017/5/9 这里改用了封装后的Glide加载头像，使更改头像后可以更新
+        ChatGlideUtil.loadImageByUrl(this ,URLHelper.getPic((int) SPUtil.get(this, Constant.KEY_USER_ID, -1)) , userHead , R.mipmap.head_default);
         userName.setText((CharSequence) SPUtil.get(this, Constant.KEY_USER_NAME, "zhikang_wen"));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        // TODO: 2017/5/9 这里改用了封装后的Glide加载头像，使更改头像后可以更新
+        if(userHead != null) {
+            ChatGlideUtil.loadImageByUrl(this, URLHelper.getPic((int) SPUtil.get(this, Constant.KEY_USER_ID, -1)), userHead, R.mipmap.head_default);
+        }
         requestPermission(REQUEST_PERMISSION, PERMISSION_LIST);
     }
 

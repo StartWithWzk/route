@@ -52,7 +52,7 @@ public class ChatService extends Service {
     private final static String GET_DATA = Constant.MomentsUrl.PERSON_DATA_GET ;
     private final static String CHAT_URL = Constant.ChatUrl.WEB_SOCKET;
     public final static String CHANGE_CONTENT = "com.qg.route.chatservice.CHANGE_CONTENT";
-
+    public final static String CHANGE_LIST = "com.qg.route.chatservice.CHANGE_LIST";
     private SoundPool mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 
     public static  Intent newIntent(Context context){
@@ -77,7 +77,7 @@ public class ChatService extends Service {
                             JsonArray jsonArray = new JsonParser().parse(json).getAsJsonArray();
                             for (JsonElement element : jsonArray) {
                                 ChatLog chatLog = gson.fromJson(element, ChatLog.class);
-                                save(chatLog);
+                                save(chatLog , null , false);
                             }
                         }
                     }
@@ -96,7 +96,7 @@ public class ChatService extends Service {
         } ,false);
     }
 
-    private void save(final ChatLog chatLog){
+    private void save(final ChatLog chatLog , final String text , final Boolean mustSend){
         Map<String,String> map = newMessage(chatLog);
         ChatDataBaseUtil.insert(ChatService.this , map);
 
@@ -119,10 +119,20 @@ public class ChatService extends Service {
                             Map<String, String> map1 = new HashMap<String, String>();
                             if (user != null) {
                                 map1.put(FriendDataBaseHelper.NAME, user.getName());
-                                map1.put(FriendDataBaseHelper.USER_ID, chatLog.getSendId() + "");
+                                map1.put(FriendDataBaseHelper.USER_ID, chatLog.getReceiveId() + "");//receive才是群
                                 map1.put(FriendDataBaseHelper.LAST_CONTENT, chatLog.getContent());
                                 map1.put(FriendDataBaseHelper.LAST_TIME, chatLog.getSendTime() +"");
+                                if(chatLog.getFlag() == 3){
+                                    map1.put(FriendDataBaseHelper.IS_CIRCLE , "1");
+                                }else map1.put(FriendDataBaseHelper.IS_CIRCLE , "0");
                                 FriendDataBaseUtil.replace(ChatService.this, map1);
+                            }
+                            if(mustSend) {
+                                Intent intent = new Intent(CHANGE_CONTENT);
+                                intent.putExtra(CHANGE_CONTENT, text);
+                                sendBroadcast(intent);
+                                intent = new Intent(CHANGE_LIST);
+                                sendBroadcast(intent);
                             }
                         }
                     }
@@ -163,10 +173,7 @@ public class ChatService extends Service {
                 public void onMessage(String text) {
                     Log.e("ONMESSAGE",text);
                     ChatLog chatLog = toChatLog(text);
-                    save(chatLog);
-                    Intent intent = new Intent(CHANGE_CONTENT);
-                    intent.putExtra(CHANGE_CONTENT , text);
-                    sendBroadcast(intent);
+                    save(chatLog , text , true);
                     AudioManager am = (AudioManager) ChatService.this
                             .getSystemService(Context.AUDIO_SERVICE);
                     float audioMaxVolumn = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);

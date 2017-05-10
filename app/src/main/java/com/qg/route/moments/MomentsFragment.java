@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -71,6 +73,7 @@ public class MomentsFragment extends Fragment {
     private boolean isRefreshing = false;
     private boolean firstInit = true;
     private RecyclerView mMomentList;
+    private RelativeLayout mMomentsFragmentLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     @Nullable
     @Override
@@ -78,6 +81,7 @@ public class MomentsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_moments , container , false);
         mMomentList = (RecyclerView) view.findViewById(R.id.moments_list);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.moments_swipe);
+        mMomentsFragmentLayout = (RelativeLayout) view.findViewById(R.id.empty_layout);
         mHandle = new Handler();
 
         initUI();
@@ -137,6 +141,7 @@ public class MomentsFragment extends Fragment {
                                     mSwipeRefreshLayout.setRefreshing(false);
                                 }
                                 mAdapter.notifyDataSetChanged();
+                                setEmptyView();
                             }
                         });
                     }
@@ -152,6 +157,14 @@ public class MomentsFragment extends Fragment {
 
             }
         },false);
+    }
+
+    private void setEmptyView(){
+        if(mTrendList.size() == 0){
+            mMomentsFragmentLayout.setVisibility(View.VISIBLE);
+        }else {
+            mMomentsFragmentLayout.setVisibility(View.GONE);
+        }
     }
 
     private void stopReFresh(){
@@ -251,6 +264,7 @@ public class MomentsFragment extends Fragment {
                                     mTrendList.remove(position);
                                     mAdapter.notifyItemRemoved(position);
                                     mAdapter.notifyDataSetChanged();
+                                    setEmptyView();
                                 }
                             });
                         }

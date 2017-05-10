@@ -31,4 +31,6 @@
     <string name="information_accept">接受</string>
     <string name="information_reject">拒绝</string>
     <string name="add_friend">添加好友</string>
+    <string name="site_normal">广州大学城</string>
+    <string name="permission">全部可见</string>
 </resources>

@@ -20,6 +20,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -224,6 +225,21 @@ public class MomentsActivity extends AppCompatActivity {
                 HttpUtil.DoGet(mDeleteFriendUrl + mId, new HttpUtil.HttpConnectCallback() {
                     @Override
                     public void onSuccess(Response response) {
+                        if(response != null){
+                            RequestResult requestResult = null;
+                            Gson gson = new Gson();
+                            try{
+                                requestResult = gson.fromJson(response.body().charStream() , RequestResult.class);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                            if(requestResult != null){
+                                Log.e("State",requestResult.getState()+ " " +requestResult.getStateInfo());
+                            }
+                            if(requestResult != null && requestResult.getState() == 167) {
+                                FriendDataBaseUtil.delete(MomentsActivity.this, new String[]{FriendDataBaseHelper.USER_ID}, new String[]{mId});
+                            }
+                        }
 
                     }
 
@@ -312,29 +328,16 @@ public class MomentsActivity extends AppCompatActivity {
 
         if(resultCode == Activity.RESULT_OK && requestCode == 1){
             mImageUri = data.getData();
+            // TODO: 2017/5/9 这里需要再兼容小米机型
+            ContentResolver cr = this.getContentResolver();
+            Cursor c = cr.query(mImageUri, null, null, null, null);
+            c.moveToFirst();
+            //这是获取的图片保存在sdcard中的位置  
+            String imagePath = c.getString(c.getColumnIndex("_data"));
             List<File> files = new ArrayList<>();
-            try {
-                ContentResolver cr = this.getContentResolver();
-                Cursor c = cr.query(mImageUri, null, null, null, null);
-                c.moveToFirst();
-                //这是获取的图片保存在sdcard中的位置  
-                String imagePath = c.getString(c.getColumnIndex("_data"));
-                files.add(new File(imagePath));
-            }catch (Exception e){
-                e.printStackTrace();
-                String[] proj = {MediaStore.Images.Media.DATA};
-                Cursor cursor = managedQuery(mImageUri, proj, null, null, null);
-                if(cursor!=null) {
-                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                    cursor.moveToFirst();
-                    String path = cursor.getString(column_index);// 图片在的路径  
-                    files.add(new File(path));
-                }
-            }
-
+            files.add(new File(imagePath));
             List<String> picKeys = new ArrayList<>();
             picKeys.add(PICTURE_KEY);
-
             HttpUtil.PostPicAndText(mUpdateImageUrl,
                     files , picKeys , null, null ,
                     new HttpUtil.HttpConnectCallback() {

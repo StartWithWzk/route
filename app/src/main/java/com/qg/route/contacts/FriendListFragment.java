@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -25,11 +26,14 @@ import com.qg.route.bean.User;
 import com.qg.route.chat.ChatActivity;
 import com.qg.route.chat.ChatFragment;
 import com.qg.route.moments.ChatGlideUtil;
+import com.qg.route.utils.ChatDataBaseHelper;
+import com.qg.route.utils.ChatDataBaseUtil;
 import com.qg.route.utils.Constant;
 import com.qg.route.utils.HttpUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.Response;
@@ -48,11 +52,14 @@ public class FriendListFragment extends Fragment {
     private String mFriendImageUrl = Constant.ChatUrl.CHAT_HEAD_IMAGE_GET;
     private RecyclerView mRecyclerView;
     private FriendAdapter mAdapter;
+    private RelativeLayout mLayout;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view= inflater.inflate(R.layout.fragment_friend_list , container ,false);
+        mLayout = (RelativeLayout) view.findViewById(R.id.empty_friend_layout);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.friend_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mFriends = new ArrayList<>();
@@ -89,6 +96,9 @@ public class FriendListFragment extends Fragment {
                             @Override
                             public void run() {
                                 mAdapter.notifyDataSetChanged();
+                                if(mFriends.size() == 0){
+                                    mLayout.setVisibility(View.VISIBLE);
+                                }else mLayout.setVisibility(View.GONE);
                             }
                         });
                     }
@@ -130,6 +140,9 @@ public class FriendListFragment extends Fragment {
         @Override
         public void onClick(View view) {
             Intent intent = ChatActivity.newIntent(getActivity() ,mFriend.getName() , mFriend.getUserid()+"" , false);
+            HashMap<String , String> map = new HashMap<>();
+            map.put(ChatDataBaseHelper.IS_NEW , "0");
+            ChatDataBaseUtil.updata(getActivity() , map , new String[]{ChatDataBaseHelper.FROM} , new String[]{mFriend.getUserid()+""});
             startActivity(intent);
         }
     }

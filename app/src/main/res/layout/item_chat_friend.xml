@@ -10,7 +10,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
-        app:cardCornerRadius="25dp">
+        app:cardCornerRadius="10dp">
         <ImageView
             android:id="@+id/chat_content_friend_image"
             android:layout_width="match_parent"
@@ -24,7 +24,6 @@
         app:cardCornerRadius="10dp"
         android:layout_marginRight="10dp"
         android:layout_toRightOf="@+id/chat_content_image_card"
-        android:layout_marginTop="20dp"
         android:layout_marginLeft="5dp"
         app:cardBackgroundColor="@color/background_tab_pressed"
         app:cardUseCompatPadding="true">

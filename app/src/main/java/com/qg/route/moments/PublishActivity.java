@@ -16,11 +16,12 @@ import com.qg.route.R;
 
 public class PublishActivity extends AppCompatActivity {
 
-    private Toolbar mToolbar;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moment_publish);
+
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.moments_publish_layout);
         if(fragment == null){
@@ -29,19 +30,6 @@ public class PublishActivity extends AppCompatActivity {
                     .add(R.id.moments_publish_layout , fragment)
                     .commit();
         }
-        mToolbar = (Toolbar) findViewById(R.id.tb_publish);
-        mToolbar.setTitle("发布动态");
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home :
-                finish();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

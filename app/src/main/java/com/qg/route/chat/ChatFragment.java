@@ -93,10 +93,15 @@ public class ChatFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             ChatLog chatLog = toChatLog(intent.getStringExtra(ChatService.CHANGE_CONTENT));
             Log.e("ChatLog",chatLog.toString());
-            if(mFragmentState != null || mFragmentState == "onResume"){
+            if(mFragmentState != null){
                 mContents.add(chatLog);
                 mChatAdapter.notifyDataSetChanged();
                 mChatContent.smoothScrollToPosition(mChatAdapter.getItemCount()-1);
+                Map<String , String> map = new HashMap<>();
+                map.put(ChatDataBaseHelper.IS_NEW , "0");
+                ChatDataBaseUtil.updata(getActivity() , map ,
+                        new String[]{ChatDataBaseHelper.FROM , ChatDataBaseHelper.TO , ChatDataBaseHelper.IS_NEW} ,
+                        new String[]{chatLog.getSendId()+"" , chatLog.getReceiveId()+"" , "1"} );
             }
         }
 
@@ -147,8 +152,7 @@ public class ChatFragment extends Fragment {
                 else chatLog.setFlag(3);
                 String json = new Gson().toJson(chatLog , ChatLog.class);
                 Log.e("JSON",json);
-                //如果不是圈子信息
-                //存到数据库
+
 
                 Map<String, String> map = newMessage(chatLog);
                 ChatDataBaseUtil.insert(getActivity(), map);
@@ -160,6 +164,9 @@ public class ChatFragment extends Fragment {
                 map1.put(FriendDataBaseHelper.USER_ID, mFriendId);
                 map1.put(FriendDataBaseHelper.LAST_CONTENT, chatLog.getContent());
                 map1.put(FriendDataBaseHelper.LAST_TIME, chatLog.getSendTime() + "");
+                if(isCircle){
+                    map1.put(FriendDataBaseHelper.IS_CIRCLE , "1");
+                }else map1.put(FriendDataBaseHelper.IS_CIRCLE , "0");
                 FriendDataBaseUtil.replace(getActivity(), map1);
 
                 mContents.add(chatLog);
@@ -185,43 +192,49 @@ public class ChatFragment extends Fragment {
             @Override
             public void run() {
                 List<ChatLog> list = new ArrayList<>();
-                list.addAll( ChatDataBaseUtil.query(getActivity() , new String[]{
-                    ChatDataBaseHelper.FROM , ChatDataBaseHelper.TO} ,new String[]{MY_ID , mFriendId},null ) );
-                if(list != null && list.size()>0) {
-                    list.addAll(ChatDataBaseUtil.query(getActivity(),
-                            new String[]{ChatDataBaseHelper.TO , ChatDataBaseHelper.FROM}, new String[]{MY_ID , mFriendId}, null));
-
-                    Collections.sort(list, new Comparator<ChatLog>() {
+                if(!isCircle) {
+                    list.addAll(ChatDataBaseUtil.query(getActivity(), new String[]{
+                            ChatDataBaseHelper.FROM, ChatDataBaseHelper.TO}, new String[]{MY_ID, mFriendId}, null));
+                    if (list != null) {
+                        list.addAll(ChatDataBaseUtil.query(getActivity(),
+                                new String[]{ChatDataBaseHelper.TO, ChatDataBaseHelper.FROM}, new String[]{MY_ID, mFriendId}, null));
+                    }
+                }else {
+                    list.addAll(ChatDataBaseUtil.query(getActivity(), new String[]{
+                            ChatDataBaseHelper.TO}, new String[]{mFriendId}, null));
+                }
+                Collections.sort(list, new Comparator<ChatLog>() {
                         @Override
                         public int compare(ChatLog chatLog, ChatLog t1) {
-                            int result = 0;
-                            if (chatLog.getSendTime() > t1.getSendTime()) {
-                                result = 1;
-                            } else if (chatLog.getSendTime() == (t1.getSendTime())) {
-                                result = 0;
-                            } else {
-                                result = -1;
-                            }
-                            return result;
-                        }
-                    });
-                    for(int i = 0 ; i < list.size() ; i++){
-                        if(list.get(i).getFlag() == 3){
-                            list.remove(i);
-                        }
-                    }
-                }
+                           int result = 0;
+                           if (chatLog.getSendTime() > t1.getSendTime()) {
+                               result = 1;
+                           } else if (chatLog.getSendTime() == (t1.getSendTime())) {
+                               result = 0;
+                           } else {
+                               result = -1;
+                           }
+                           return result;
+                       }
+                });
+//                for(int i = 0 ; i < list.size() ; i++){
+//                    if(list.get(i).getFlag() == 3){
+//                        list.remove(i);
+//                    }
+//                }
+
                 mContents.clear();
                 mContents.addAll(list);
                 Log.e("mContents" , mContents.toString());
-                if(mChatContent != null && mChatContent.getAdapter() != null)
+                if(mChatContent != null && mChatContent.getAdapter() != null) {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if(mChatContent != null && mChatContent.getAdapter() != null)
+                            if (mChatContent != null && mChatContent.getAdapter() != null)
                                 mChatContent.getAdapter().notifyDataSetChanged();
                         }
                     });
+                }
             }
         };
 

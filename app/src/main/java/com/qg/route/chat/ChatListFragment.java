@@ -1,27 +1,31 @@
 package com.qg.route.chat;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.qg.route.R;
 import com.qg.route.bean.ChatLog;
-import com.qg.route.login.LoginActivity;
 import com.qg.route.moments.ChatGlideUtil;
 import com.qg.route.utils.ChatDataBaseHelper;
 import com.qg.route.utils.ChatDataBaseUtil;
 import com.qg.route.utils.Constant;
-import com.qg.route.utils.FriendDataBaseHelper;
 import com.qg.route.utils.FriendDataBaseUtil;
 
 import java.util.ArrayList;
@@ -40,6 +44,10 @@ import java.util.concurrent.Executors;
 
 public class ChatListFragment extends Fragment {
 
+    private ChatListReceiver mChatListReceiver = new ChatListReceiver();
+    private List<Integer> mCountList;
+    private Boolean isResume = false;
+    private String mFragmentState;
     private final static String MY_ID = Constant.USER_ID;
     private Handler mHandler = new Handler();
     private List<ChatBean> mFriends;
@@ -47,22 +55,32 @@ public class ChatListFragment extends Fragment {
     private String mFriendImageUrl = Constant.ChatUrl.CHAT_HEAD_IMAGE_GET;
     private ChatAdapter mChatAdapter = null;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private RelativeLayout mLayout;
+    private static final String ON_PAUSE = "onPause";
+    private static final String ON_RESUME = "onResume";
 
-    private Runnable getNewsCountRunnable(final ChatHolder chatHolder, final ChatBean user){
+    private Runnable getNewsCountRunnable(final ChatBean user){
         return new Runnable() {
             @Override
             public void run() {
                 int count = 0;
-                List<ChatLog> list = ChatDataBaseUtil.query(getActivity() , new String[]{ChatDataBaseHelper.FROM ,
-                        ChatDataBaseHelper.TO , ChatDataBaseHelper.IS_NEW} , new String[]{user.getUser_id() , MY_ID, "1"} , null);
-                Map<String , String> map = new HashMap<>();
-                map.put(ChatDataBaseHelper.IS_NEW , "0");
+                List<ChatLog> list  = new ArrayList<>();
+                if(user.getIs_circle().equals("0")) {
+                    list = ChatDataBaseUtil.query(getActivity(), new String[]{ChatDataBaseHelper.FROM,
+                            ChatDataBaseHelper.TO, ChatDataBaseHelper.IS_NEW}, new String[]{user.getUser_id(), MY_ID, "1"}, null);
+                }else{
+                    list = ChatDataBaseUtil.query(getActivity(), new String[]{
+                            // TODO: 2017/5/10
+                            ChatDataBaseHelper.TO, ChatDataBaseHelper.IS_NEW}, new String[]{user.getUser_id(),"1"}, null);
+                }
                 count += list.size();
-                final int finalCount = count;
+                mCountList.add(count);
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        chatHolder.bindNewsCount(finalCount);
+                        if(mCountList.size() > 0)
+                            mChatAdapter.notifyItemChanged(mCountList.size()-1);
+                        Log.e("UPDATe",mCountList.size()+"  "+mCountList.get(mCountList.size()-1));
                     }
                 });
             }
@@ -74,18 +92,32 @@ public class ChatListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_chat_list , container ,false);
-
+        mLayout = (RelativeLayout) view.findViewById(R.id.empty_chat_layout);
         mChatList = (RecyclerView) view.findViewById(R.id.chat_list);
         mChatList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mFriends = new ArrayList<ChatBean>();
+        mCountList = new ArrayList<>();
         mChatAdapter = new ChatAdapter();
         mChatList.setAdapter(mChatAdapter);
         executorService.execute(getFriendListRunnable());
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mFragmentState = ON_RESUME;
+        if(isResume) {
+            executorService.execute(getFriendListRunnable());
+        }
+        isResume = true;
+    }
 
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        mFragmentState = ON_PAUSE;
+    }
 
     private Runnable getFriendListRunnable(){
         return new Runnable() {
@@ -106,15 +138,22 @@ public class ChatListFragment extends Fragment {
                         return  result;
                     }
                 });
+                mCountList.clear();
                 if(mFriends!=null && mFriends.size()>0) {
                     for (int i = 0 ; i < mFriends.size() ; i++) {
-                        if (mFriends.get(i).getUser_id().equals("0"))
+                        if (mFriends.get(i).getUser_id().equals("0")) {
                             mFriends.remove(mFriends.get(i));
+                        }else if(mFriends.get(i).getLast_content() == null){
+                            mFriends.remove(mFriends.get(i));
+                        } else executorService.execute(getNewsCountRunnable(mFriends.get(i)));
                     }
                 }
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
+                        if(mFriends.size() == 0){
+                            mLayout.setVisibility(View.VISIBLE);
+                        }else mLayout.setVisibility(View.GONE);
                         mChatAdapter.notifyDataSetChanged();
                     }
                 });
@@ -146,20 +185,23 @@ public class ChatListFragment extends Fragment {
             ChatGlideUtil.loadImageByUrl(ChatListFragment.this , mFriendImageUrl+friend.getUser_id()+".jpg" , mChatImage , R.drawable.normal_person_image);
         }
         public void bindNewsCount(int count){
-            if(count > 0)
+            if(count > 0) {
+                mNewsCount.setVisibility(View.VISIBLE);
                 mNewsCount.setText(count + "");
-            else mNewsCount.setVisibility(View.INVISIBLE);
+            }else mNewsCount.setVisibility(View.INVISIBLE);
         }
 
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(getActivity() , ChatActivity.class);
-            intent.putExtra(ChatFragment.USER_NAME , mFriend.getName());
-            intent.putExtra(ChatFragment.USER_ID , mFriend.getUser_id());
-            intent.putExtra(ChatFragment.IS_CIRCLE , mFriend.getIs_circle());
+            Intent intent;
+            if(mFriend.getIs_circle().equals("1")){
+                intent = ChatActivity.newIntent(getActivity() , mFriend.getName() , mFriend.getUser_id() , true);
+            }else{
+                intent = ChatActivity.newIntent(getActivity() , mFriend.getName() , mFriend.getUser_id() , false);
+            }
             HashMap<String , String> map = new HashMap<>();
             map.put(ChatDataBaseHelper.IS_NEW , "0");
-            ChatDataBaseUtil.updata(getActivity() , map , new String[]{ChatDataBaseHelper.FROM} , new String[]{mFriend.getUser_id()});
+            ChatDataBaseUtil.updata(getActivity() , map , new String[]{ChatDataBaseHelper.FROM , ChatDataBaseHelper.IS_NEW} , new String[]{mFriend.getUser_id() , "1"});
             startActivity(intent);
         }
     }
@@ -179,8 +221,10 @@ public class ChatListFragment extends Fragment {
         @Override
         public void onBindViewHolder(ChatHolder holder, int position) {
             ChatBean user = mFriends.get(position);
+            Integer i = mCountList.get(position);
+            Log.e("I",i+" "+position);
             holder.bindChatList(user);
-            executorService.execute(getNewsCountRunnable(holder , user));
+            holder.bindNewsCount(i);
         }
 
 
@@ -188,6 +232,27 @@ public class ChatListFragment extends Fragment {
         public int getItemCount() {
             if(mFriends == null) return 0;
             else return mFriends.size();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getActivity().registerReceiver(mChatListReceiver , new IntentFilter(ChatService.CHANGE_LIST));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getActivity().unregisterReceiver(mChatListReceiver);
+    }
+
+    private class ChatListReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(mFragmentState != null) {
+                executorService.execute(getFriendListRunnable());
+            }
         }
     }
 }

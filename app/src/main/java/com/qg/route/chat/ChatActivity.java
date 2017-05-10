@@ -23,7 +23,7 @@ public class ChatActivity extends SingleFragmentActivity{
     protected Fragment createFragment() {
         String name = null;
         String id = null;
-        Boolean isCircle = null;
+        Boolean isCircle;
         Intent i = getIntent();
         name = i.getStringExtra(ChatFragment.USER_NAME);
         id = i.getStringExtra(ChatFragment.USER_ID);

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -22,11 +23,15 @@ import com.qg.route.R;
 import com.qg.route.bean.Information;
 import com.qg.route.bean.RequestResult;
 import com.qg.route.utils.Constant;
+import com.qg.route.utils.FriendDataBaseHelper;
+import com.qg.route.utils.FriendDataBaseUtil;
 import com.qg.route.utils.HttpUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Response;
 
@@ -36,6 +41,7 @@ import okhttp3.Response;
 
 public class InformationFragment extends Fragment {
 
+    private RelativeLayout mLayout;
     private static final String HANDLE_INFORMATION = Constant.InformationUrl.HANDLE_INFORMATION;
     private static final String INFORMATION_GET = Constant.InformationUrl.INFORMATION_GET;
     private List<Information> mInformationList;
@@ -49,6 +55,7 @@ public class InformationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_information , container , false);
+        mLayout = (RelativeLayout) view.findViewById(R.id.empty_information_layout);
         mInformationRecyclerView = (RecyclerView) view.findViewById(R.id.information_list);
         mInformationList = new ArrayList<>();
         mAdapter = new InformationAdapter();
@@ -70,6 +77,7 @@ public class InformationFragment extends Fragment {
                 handleInformation(mInformationList.get(viewHolder.getAdapterPosition()) , 4);
             }
         });
+        mItemTouchHelper.attachToRecyclerView(mInformationRecyclerView);
         mHandler = new Handler();
         getInformationList();
         return view;
@@ -106,7 +114,16 @@ public class InformationFragment extends Fragment {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
+                                // TODO: 2017/5/10
+                                for(Information information : mInformationList){
+                                    if((information.getSendId()+"").equals(Constant.USER_ID)){
+                                        mInformationList.remove(information);
+                                    }
+                                }
                                 mAdapter.notifyDataSetChanged();
+                                if(mInformationList.size() == 0){
+                                    mLayout.setVisibility(View.VISIBLE);
+                                }else mLayout.setVisibility(View.GONE);
                             }
                         });
                     }
@@ -140,6 +157,8 @@ public class InformationFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     handleInformation(information , 1);
+                    mInformationList.remove(information);
+                    mAdapter.notifyItemRemoved(mInformationList.indexOf(information));
                 }
 
             });
@@ -147,6 +166,8 @@ public class InformationFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     handleInformation(information , 3);
+                    mInformationList.remove(information);
+                    mAdapter.notifyItemRemoved(mInformationList.indexOf(information));
                 }
             });
             mInformationText.setText(information.getContent());
@@ -172,7 +193,7 @@ public class InformationFragment extends Fragment {
         }
     }
 
-    private void handleInformation(final Information information , int flag) {
+    private void handleInformation(final Information information , final int flag) {
         HttpUtil.DoGet(HANDLE_INFORMATION + information.getId() + "/" + flag, new HttpUtil.HttpConnectCallback() {
             @Override
             public void onSuccess(Response response) {
@@ -187,6 +208,11 @@ public class InformationFragment extends Fragment {
                                 mAdapter.notifyItemRemoved(mInformationList.indexOf(information));
                                 mInformationList.remove(information);
                                 mAdapter.notifyDataSetChanged();
+                                if(flag == 1){
+                                    Map<String , String> map = new HashMap<String, String>();
+                                    map.put(FriendDataBaseHelper.USER_ID , information.getSendId()+"");
+                                    FriendDataBaseUtil.insert(getActivity() , map);
+                                }
                             }
                         });
 

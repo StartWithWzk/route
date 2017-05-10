@@ -11,7 +11,7 @@
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
-        app:cardCornerRadius="25dp">
+        app:cardCornerRadius="10dp">
         <ImageView
             android:id="@+id/chat_content_my_image"
             android:layout_width="match_parent"
@@ -25,7 +25,7 @@
         app:cardCornerRadius="10dp"
         android:layout_marginRight="5dp"
         android:layout_toLeftOf="@+id/chat_content_image_card"
-        android:layout_marginTop="20dp"
+
         app:cardBackgroundColor="@color/background_tab_pressed"
         app:cardUseCompatPadding="true">
         <TextView

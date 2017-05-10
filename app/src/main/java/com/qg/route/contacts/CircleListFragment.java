@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -25,11 +26,14 @@ import com.qg.route.bean.RequestResult;
 import com.qg.route.bean.User;
 import com.qg.route.chat.ChatActivity;
 import com.qg.route.moments.ChatGlideUtil;
+import com.qg.route.utils.ChatDataBaseHelper;
+import com.qg.route.utils.ChatDataBaseUtil;
 import com.qg.route.utils.Constant;
 import com.qg.route.utils.HttpUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.Response;
@@ -46,12 +50,14 @@ public class CircleListFragment extends Fragment{
     private List<ChatRoom> mChatRoomList;
     private Handler mHandler;
     private ChatRoomAdapter mAdapter;
+    private RelativeLayout mLayout;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view= inflater.inflate(R.layout.fragment_circle_list , container ,false);
+        mLayout = (RelativeLayout) view.findViewById(R.id.empty_circle_layout);
         mCircleList = (RecyclerView) view.findViewById(R.id.circle_list);
         mChatRoomList = new ArrayList<>();
         mHandler = new Handler();
@@ -92,6 +98,9 @@ public class CircleListFragment extends Fragment{
                 @Override
                 public void onClick(View view) {
                     Intent intent = ChatActivity.newIntent(getActivity() , chatRoom.getRoomName() , chatRoom.getId()+"" , true);
+                    HashMap<String , String> map = new HashMap<>();
+                    map.put(ChatDataBaseHelper.IS_NEW , "0");
+                    ChatDataBaseUtil.updata(getActivity() , map , new String[]{ChatDataBaseHelper.FROM} , new String[]{chatRoom.getId()+""});
                     startActivity(intent);
                 }
             });
@@ -123,6 +132,9 @@ public class CircleListFragment extends Fragment{
                                     @Override
                                     public void run() {
                                         mAdapter.notifyDataSetChanged();
+                                        if(mChatRoomList.size() == 0){
+                                            mLayout.setVisibility(View.VISIBLE);
+                                        }else mLayout.setVisibility(View.GONE);
                                     }
                                 });
                             }
