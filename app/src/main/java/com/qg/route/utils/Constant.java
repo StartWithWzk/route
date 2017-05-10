@@ -83,7 +83,7 @@ public class Constant {
         public static final String PERSON_DATA_GET = BASE_URL + "/user/get/";
         public static final String PERSON_HEAD_IMAGE = BASE_URL + "/picture/";
         public static final String UPDATE_IMAGE = BASE_URL + "/user/send/picture";
-        public static final String DELETE_FRIEND = BASE_URL + "/relation/delete/";
+        public static final String DELETE_FRIEND = BASE_URL + "/user/relation/delete/";
         public static final String LOAD_MOMENT_IMAGE = BASE_URL + "/photo/";
         public static final String DELETE_MOMENT = BASE_URL + "/trends/delete/";
         public static final String MOMENT_GET  = BASE_URL + "/trends/personal/";
